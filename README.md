@@ -1,72 +1,78 @@
-# Choir: Deep-Space Signal Intelligence that trusts what decodes
+# Choir: an autonomous multi-dish receiver for weak spacecraft telemetry
 
-**MATLAB in Space Hackathon (Northeastern University, 3 October 2026) · Track 1 (Advanced): Deep-Space Communication & Signal Intelligence**
+MATLAB in Space Hackathon, Northeastern University, 3 October 2026. Track 1 (Advanced): Deep-Space Communication & Signal Intelligence.
 
-**Goal (the track's words):** find, clean and decode weak radio signals with no human tuning.
+**Track 1 task:** find, clean, and decode weak radio signals with no human tuning.
 
-## The 60-second version
+## Summary
 
-- **Problem.** A deep-space signal is too weak for one dish, so the Deep Space Network combines several (arraying). The classic way to line dishes up, JPL's SUMPLE, follows whatever the dishes agree on. When something louder reaches every dish, such as another spacecraft or a radio source in the beam, that is what they agree on.
-- **What Choir does.** Choir is an autonomous 8-dish receiver written in MATLAB. It finds the carrier, lines the dishes up, decodes CCSDS telemetry frames and logs the telemetry. It recovers from dead dishes, clock glitches, carrier hops, deep fades and interference, and it logs why it made every decision.
-- **The key idea.** Each dish's weight is learned only from frames that pass the checksum, carry our spacecraft ID and continue the frame count. Interference is cancelled using the current frame's samples.
-- **The result.** With a look-alike spacecraft 10 dB louder than ours at every dish, Choir delivers 88.5% of frames bit-exact and SUMPLE delivers 0%. With six hidden faults per run, Choir delivers 90.6% and SUMPLE, given the same supervisor, 77.7%. Across all experiments, 0 frames were logged with wrong data.
-- **The data.** The telemetry values are real NASA Curiosity (MSL) telemetry from the telemanom dataset. The 8-dish radio link that carries them is simulated in MATLAB.
+- **Problem.** One dish cannot decode a very weak spacecraft signal, so the Deep Space Network adds the signals from several dishes (arraying). JPL's SUMPLE method aligns the dishes from the agreement between them only. If a stronger signal reaches all dishes, for example from another spacecraft, SUMPLE aligns the dishes to that signal.
+- **Solution.** Choir is a MATLAB receiver for 8 simulated dishes.
+  - It finds the carrier, aligns the dishes, decodes CCSDS telemetry frames, and writes a telemetry log.
+  - It continues to operate after dish failures, clock errors, carrier frequency hops, fades, and interference.
+  - It records the cause of each decision in a log.
+- **Method.** Choir calculates the weight of each dish only from verified frames. A verified frame has a correct CRC, the correct spacecraft ID, and the next frame count. Choir uses all received samples to cancel interference.
+- **Results.**
+  - Interference test: a look-alike spacecraft was 10 dB stronger than the spacecraft at each dish. Choir delivered 88.5% of the frames without bit errors; SUMPLE delivered 0%.
+  - Fault test: each run had six hidden faults. Choir delivered 90.6% of the frames; SUMPLE with the same supervisor delivered 77.7%.
+  - No receiver logged a frame with incorrect data.
+- **Data.** The telemetry values are real NASA Curiosity (MSL) data from the telemanom dataset. The 8-dish radio link is a MATLAB simulation.
 
 ![Interference results](choir/results/figures/interference.png)
 
-## What the judges asked for, and where it is
+## Submission requirements and locations
 
-| Requirement | Where |
+| Requirement | Location |
 |---|---|
-| Problem and approach | [Problem](#1-problem), [Approach](#2-approach) |
+| Problem and approach | [Problem](#1-problem), [Method](#2-method) |
 | Datasets used | [Data](#7-data) |
-| How to run | [Run it](#6-run-it): one command, `run_all` |
+| How to run | [How to run](#6-how-to-run): one command, `run_all` |
 | Results with plots or images | [Results](#3-results), `choir/results/figures/` |
 | Limitations and next steps | [Limitations](#8-limitations-and-next-steps) |
 | Track 1: telemetry log | `choir/results/telemetry_log_seed301.csv`; plot `choir/results/figures/telemetry.png` |
 | Track 1: before/after spectral plots | `choir/results/figures/spectra.png` |
 | Autonomy: drift, dropouts, component failures, no human input | [Autonomy](#4-autonomy), `choir/results/decision_log_seed301.csv` |
 | Real mission data | NASA MSL telemetry (telemanom), [Data](#7-data) |
-| Slide deck | [`choir/docs/slides.pdf`](choir/docs/slides.pdf) |
+| Slide deck | [`choir/docs/slides.pdf`](choir/docs/slides.pdf); speaker notes in [`choir/docs/speaker_notes.md`](choir/docs/speaker_notes.md) |
 
 ## 1. Problem
 
-- **Weak signals.** At the per-dish signal level used here (mean Es/N0 of 2 dB), no single dish can decode an uncoded frame. Eight dishes together can.
-- **Lining the dishes up.** The dishes must be aligned in time and phase without knowing the data.
-- **Interference.** Blind alignment can be captured by anything louder that reaches every dish.
-- **Scarce antenna time.** NASA's Deep Space Network is oversubscribed by up to 40% at times (NASA OIG, 2023), and nobody can hand-tune a receiver 20 light-minutes away.
+- **Weak signals.** At a mean Es/N0 of 2 dB per dish, one dish cannot decode an uncoded frame. Eight dishes together can.
+- **Alignment.** The receiver must align the dishes in time and phase, and it does not know the data.
+- **Interference.** An alignment method that uses only the agreement between dishes can align to a stronger signal that reaches all dishes.
+- **Antenna time.** At times, the demand for Deep Space Network time is up to 40% more than the capacity (NASA OIG, 2023).
+- **Autonomy.** Track 1 requires operation without manual tuning.
 
-## 2. Approach
+## 2. Method
 
 ```
 telemetry (NASA MSL) -> CCSDS-style frames + CRC-16 -> ccsdsTMWaveformGenerator (BPSK)
   -> [hidden] 8 dishes: own SNR, delay, drift + seeded faults + interferers
   -> Choir: SEARCH -> ALIGN -> DECODE -> FALLBACK -> SEARCH ... -> telemetry log
-  -> independent scorer compares the log with what was sent
+  -> independent scorer compares the log with the transmitted data
 ```
 
-| Stage | What MATLAB does |
-|---|---|
-| SEARCH | Squares the BPSK signal so the carrier shows up as a tone, sums the spectra over the dishes, and interpolates the peak |
-| ALIGN | Searches for the sync marker over one frame period on every dish to find the frame timing and each dish's delay; rejects frames with another spacecraft's ID |
-| DECODE | Weights `w = Q⁻¹h`. `h` comes only from verified frames (1,816 known symbols each); `Q` is the frame covariance minus the spacecraft's own part, floored at the noise level |
-| Dish health | A dish that stops matching verified frames sits out, then is re-timed (±16 samples) or excluded, and is probed until it returns |
-| FALLBACK | After 3 bad frames: re-time every dish on the sync marker and use equal weights. After 8: go back to a full carrier search |
+| State | Function | Next state |
+|---|---|---|
+| SEARCH | Squares the BPSK signal to show the carrier as a tone, adds the spectra of all dishes, and interpolates the peak | ALIGN, when a spectral peak is 12 times the median |
+| ALIGN | Finds the sync marker in one frame period on each dish, which gives the frame timing and the delay of each dish. Rejects frames that have a different spacecraft ID | DECODE, when a frame passes the three checks |
+| DECODE | Uses the weights `w = Q⁻¹h`. `h` comes only from verified frames (1,816 known symbols each). `Q` is the frame covariance without the spacecraft part, with the noise level as the lower limit. A dish that does not match the verified frames is re-timed (±16 samples) or removed, then tested again every 25 frames | FALLBACK, after 3 bad frames in sequence |
+| FALLBACK | Re-times each dish on the sync marker and uses equal weights | DECODE, when a frame passes the checks; SEARCH, after 8 bad frames in sequence |
 
-### Why these choices
+### Design decisions
 
-- **The real CCSDS frame structure.** It makes the look-alike test honest: real spacecraft share the sync marker and send valid CRCs, so the spacecraft-ID check matters.
-- **Verified frames give 17.5 dB more averaging than the sync marker alone** (1,816 symbols vs 32). The "sync-marker only" baseline uses Choir's math but learns from the 32 known bits. It isolates the difference: 7.3% vs Choir's 87.8% against a +20 dB look-alike.
-- **Subtracting the spacecraft's own part from the covariance.** Without it, our first version partly cancelled the spacecraft at high SNR, a known effect when `h` is slightly off.
-- **A fair comparison.** Every receiver sees identical samples and shares the same front end and supervisor. Without interference, SUMPLE and equal gain match the bound to within a few frames; this is checked automatically in the tests.
-- **No deep learning.** The combining and decoding math is known and close to optimal, and there was no training data for a network.
+- **CCSDS frame structure.** Real spacecraft use the same sync marker and send correct CRCs. Thus a check of the spacecraft ID is necessary.
+- **Verified frames.** A verified frame gives 1,816 known symbols, and the sync marker gives 32. This is approximately 17.5 dB more averaging. The "sync-marker only" receiver uses the same calculation as Choir but only the 32 known bits. With a +20 dB look-alike, it delivered 7.3% of the frames and Choir delivered 87.8%.
+- **Covariance correction.** The first version used the full frame covariance. At high SNR, it partly cancelled the spacecraft signal, which is a known effect when `h` has small errors. The current version subtracts the spacecraft part (`h hᴴ`) and uses the noise level as the lower limit.
+- **Fair comparison.** All receivers use the same samples, the same front end, and the same supervisor, so only the dish weights are different. Without interference, SUMPLE and equal gain are within a few frames of the bound, and a test checks this.
+- **No deep learning.** The combining and decoding calculations are known and almost optimal. No training data was available.
 
 ## 3. Results
 
-All numbers come from `choir/run_all.m`:
-- **Development** used seeds 1–30 and 101–120.
-- **Reported results** come from fresh seeds 301–320, run after the receiver was frozen. Later edits changed only log messages and figure labels, and the numbers did not change.
-- **Intervals** in the figures are 95% Clopper–Pearson.
+- All numbers come from `choir/run_all.m`.
+- Development used seeds 1–30 and 101–120. After that, the receiver was frozen, and the reported results use new seeds 301–320.
+- Later changes affected only log text and figure labels, so the numbers did not change.
+- The figures show 95% Clopper–Pearson intervals.
 
 | 8 dishes, mean 2 dB per dish | Choir | SUMPLE | Equal gain | Sync-marker only | Bound* |
 |---|---|---|---|---|---|
@@ -74,142 +80,158 @@ All numbers come from `choir/run_all.m`:
 | Look-alike spacecraft +20 dB | **87.8%** | 0.0% | 0.0% | 7.3% | 89.8% |
 | Wide-band source +10 dB | **99.8%** | 0.8% | 15.0% | 98.5% | 99.8% |
 | Wide-band source +20 dB | **98.3%** | 0.0% | 0.0% | 72.0% | 99.8% |
-| Wrong frames logged | **0** | 0 | 0 | 0 | 0 |
+| Frames logged with incorrect data | **0** | 0 | 0 | 0 | 0 |
 
-\* The bound knows the transmitted bits of every frame. It is a reference, not a receiver. The best single dish gets 0% in every row, because at 2 dB one dish cannot decode.
+The values are the percentage of frames delivered without bit errors.
 
-**Before/after spectra** (the required Track 1 plots):
-- **No interference:** eight dishes lift the signal about 10 dB above the noise, versus about 3 dB for one dish.
-- **Wide-band source at +10 dB:** it raises one dish's noise floor to 7.7 dB. SUMPLE amplifies it to 16 dB; Choir brings the floor back to 0.1 dB.
+\* The bound uses the transmitted bits of each frame. It is a reference, not a receiver. The best single dish delivered 0% in each row because one dish cannot decode at 2 dB.
+
+**Before/after spectra** (Track 1 requirement):
+- **No interference:** with 8 dishes, the signal is approximately 10 dB above the noise. With one dish, it is approximately 3 dB above the noise.
+- **Wide-band source at +10 dB:** the source increases the noise floor of one dish to 7.7 dB. The SUMPLE output noise floor is 16 dB, and the Choir output noise floor is 0.1 dB.
 
 ![Spectra](choir/results/figures/spectra.png)
 
-**No interference.** One dish needs about 8 dB per dish; eight dishes decode 100% of frames at 2 dB each.
+**No interference.** One dish needs approximately 8 dB. Eight dishes decoded 100% of the frames at 2 dB each.
 
 ![SNR sweep](choir/results/figures/snr.png)
 
-**Where Choir loses (measured)**
-- **A look-alike arriving almost the same way as our spacecraft.** In one geometry (seed 304), the two signals' patterns across the dishes have a similarity of 0.81; in the other nine geometries it is 0.16–0.58. Every receiver fails there, including the bound. That geometry is why the look-alike rows are near 89% rather than 100%.
-- **No interference and a very weak signal.** Choir is no better than SUMPLE: 27.8% vs 32.6% at −2 dB. Its advantage is robustness, not sensitivity.
+### Known failure cases
+
+- **Look-alike with a similar arrival pattern.**
+  - In seed 304, the similarity between the two signal patterns across the dishes was 0.81. In the other nine geometries, it was 0.16 to 0.58.
+  - All receivers failed in seed 304, including the bound.
+  - This geometry is the main cause of the values near 89%, not 100%, in the look-alike rows. Seed 305 (similarity 0.58) also lost some frames.
+- **Weak signal without interference.** Choir is not better than SUMPLE: at −2 dB, Choir delivered 27.8% and SUMPLE 32.6%. The advantage of Choir is resistance to interference and faults, not sensitivity.
 
 ## 4. Autonomy
 
-Twenty runs of 300 frames (8.5 s) each. Every run hides six faults at random times and dishes, and the receiver is never told:
-- a dead dish
-- a clock glitch
+The fault test has 20 runs. Each run has 300 frames (8.5 s) and six hidden faults at random times and on random dishes. The receiver gets no fault information.
+- one dish fails
+- one dish has a clock error
 - a look-alike spacecraft at +10 dB
 - a carrier hop of ±0.5–3 kHz
-- a −30 dB fade of every dish
-- a dish with 10× noise
+- a −30 dB fade on all dishes
+- one dish with 10 times the noise
 
-| Receiver | Frames correct | Worst run | Back after carrier hop | Through the look-alike |
+| Receiver | Frames correct | Worst run | Recovery after carrier hop | During the look-alike |
 |---|---|---|---|---|
 | **Choir** | **90.6%** | 80.7% | 284 ms | no interruption |
-| SUMPLE + same supervisor | 77.7% | 70.0% | 284 ms | lost the whole 0.85 s window |
-| Equal gain + same supervisor | 77.3% | 70.7% | 284 ms | lost the whole 0.85 s window |
-| Choir, supervisor off | 40.0% | 7.7% | never | recovered in only 55% of runs |
+| SUMPLE + same supervisor | 77.7% | 70.0% | 284 ms | lost the full 0.85 s period |
+| Equal gain + same supervisor | 77.3% | 70.7% | 284 ms | lost the full 0.85 s period |
+| Choir, supervisor off | 40.0% | 7.7% | no recovery | recovered in 55% of runs |
 
-Dead dishes, clock glitches and the noisy dish cause no interruption for Choir. The full table is in `choir/results/faults_recovery.csv`.
+Dish failures, clock errors, and the noisy dish did not interrupt Choir. The full table is in `choir/results/faults_recovery.csv`.
 
 ![Timeline](choir/results/figures/timeline.png)
 
-**From the decision log** (`choir/results/decision_log_seed301.csv`; the truth is in `hidden_faults_seed301.csv`). Every hidden fault was logged within 2 frames (57 ms):
+**Decision log.**
+- Choir recorded each hidden fault within 2 frames (57 ms).
+- The excerpt below is the program output from `choir/results/decision_log_seed301.csv`. The hidden faults are in `hidden_faults_seed301.csv`.
 ```
  0.795 s  interference     a strong extra source reaches 8 dishes (21 dB over noise); weights now cancel it
  2.213 s  dish down        dish 2 stopped matching verified frames (fit 0.80 -> 0.01) and was not found nearby: excluded
  3.632 s  dish back        probe found dish 2 again (fit 0.83, timing +0 samples): re-included
  4.937 s  lost             8 bad frames in a row: full carrier re-search
- 5.987 s  dish re-aligned  dish 1 stopped matching verified frames; timing moved -12 samples
- 7.406 s  carrier found    +1440.5 Hz (the hidden hop was +1363 Hz on top of about 75 Hz of offset and drift)
+ 5.987 s  dish re-aligned  dish 1 stopped matching verified frames (fit 0.75 -> 0.21); timing moved -12 samples, fit now 0.55
+ 7.406 s  carrier found    +1440.5 Hz (spectral peak/median 1206)
 ```
+The hidden carrier hop was +1363 Hz. With the initial offset (40 Hz) and the drift (5 Hz/s), the true carrier was approximately 1438.5 Hz at that time.
 
-**Telemetry log.** These are real MSL values, logged only from verified frames. The gaps are frames the receiver refused to log.
+**Telemetry log.** The plot shows real MSL values, logged only from verified frames. A gap is a frame that the receiver did not log.
 
 ![Telemetry](choir/results/figures/telemetry.png)
 
-## 5. More in this repo
+## 5. Other parts of the repository
 
-- **Simulink** (`choir/simulink/`). The same receiver runs inside Simulink: a Level-2 MATLAB S-Function steps `rx_step` once per frame. It delivered 275 of 300 frames for seed 301, matching the MATLAB run. To try it, run `build_choir_sim` and then `run_choir_sim`.
-- **Swarm receivers** (`choir/swarm/`, an add-on). Several receivers search the carrier frequency, phase, timing and gain together (a particle swarm), using a known training message.
-  - In its three reported runs it learned each carrier offset to within 0.6 Hz.
-  - It decoded two messages with 0 bit errors. The third, at 4 dB, had 3 of 160 bits wrong, near the BPSK noise limit.
-  - It runs in plain MATLAB; see `choir/swarm/README.md`.
+- **Simulink** (`choir/simulink/`).
+  - A Level-2 MATLAB S-Function runs the same receiver code (`rx_step`) one frame per simulation step.
+  - For seed 301, it delivered 275 of 300 frames, the same as the MATLAB run.
+  - To run it, use `build_choir_sim`, then `run_choir_sim`.
+- **Swarm receivers** (`choir/swarm/`, add-on).
+  - Several receivers find the carrier frequency, phase, timing, and gain together with a particle swarm method. They use a known training message.
+  - In three reported runs, the error in each carrier offset was 0.6 Hz or less.
+  - Two messages had 0 bit errors. The third message, at 4 dB, had 3 of 160 bits wrong, which is near the BPSK noise limit.
+  - It runs in MATLAB with no toolboxes; see `choir/swarm/README.md`.
 - **Hardware demo** (shown live, Raspberry Pi Pico).
-  - Three LEDs take turns sending the same Morse frame to one photoresistor: a sync pulse, ID C, a counter, MATLAB, and a checksum.
-  - Each round, a hidden fault garbles one LED, corrupts its payload, or puts a look-alike frame (ID Q) on 2 of 3 LEDs.
-  - A majority vote trusts what the LEDs agree on; Choir's rule trusts only frames that pass the checksum, carry ID C and move the counter forward. A look-alike on 2 of 3 LEDs is built to win the vote and fail Choir's ID check.
-  - Light adds as brightness, so this illustrates the trust rule, not radio combining.
+  - Three LEDs send the same Morse frame, in sequence, to one photoresistor. The frame has a sync pulse, ID C, a counter, the payload MATLAB, and a checksum.
+  - In each round, a hidden fault changes the light from one LED (flicker), changes the payload of one LED, or sends a look-alike frame (ID Q) on 2 of 3 LEDs.
+  - The majority vote uses the frame that most LEDs agree on. The Choir rule accepts only frames that pass the checksum, have ID C, and have a higher counter.
+  - The design makes a look-alike on 2 of 3 LEDs win the vote and fail the Choir ID check.
+  - Light intensities add, so this demo shows the acceptance rule, not radio combining.
 - **Slides and explainer.**
-  - `choir/docs/slides.pdf` holds the slides; every number in them is read from `choir/deck/numbers.json`, which `choir/deck/make_figs.m` builds from the results files.
-  - `choir/docs/choir-explainer.html` is an animated, offline explainer with illustrative visuals.
+  - The slides are `choir/docs/slides.pdf`, and the speaker notes are `choir/docs/speaker_notes.md`.
+  - The images on the slides are MATLAB outputs: MATLAB figures from `choir/results/figures/`, a MATLAB table of the decision log, the Simulink model and scope signals, and the swarm figure.
+  - Each number on the slides comes from `choir/deck/numbers.json`, which `choir/deck/make_figs.m` calculates from the results files.
+  - `choir/docs/choir-explainer.html` is an animated explainer. Its visuals are illustrations.
 
-## 6. Run it
+## 6. How to run
 
 **Requirements**
-- MATLAB R2026b with Communications, Satellite Communications, Signal Processing, DSP System, and Statistics and Machine Learning Toolboxes.
-- Optional: Parallel Computing Toolbox. With it, the full run takes about 2 minutes on a 12-core laptop; without it, everything runs serially.
+- MATLAB R2026b with Communications Toolbox, Satellite Communications Toolbox, Signal Processing Toolbox, DSP System Toolbox, and Statistics and Machine Learning Toolbox.
+- Optional: Parallel Computing Toolbox. With it, the full run takes approximately 2 minutes on a 12-core laptop. Without it, the run is serial.
 
-**Setup**
-1. Download the telemanom dataset zip from Kaggle (`patrickfleith/nasa-anomaly-detection-dataset-smap-msl`, about 86 MB).
-2. Extract `labeled_anomalies.csv` and `data/data/test/*.npy` anywhere under `choir/res/`. That folder is not committed.
-3. From `choir/`, run:
+**Procedure**
+1. Download the telemanom dataset from Kaggle (`patrickfleith/nasa-anomaly-detection-dataset-smap-msl`, approximately 86 MB).
+2. Extract `labeled_anomalies.csv` and `data/data/test/*.npy` into a folder below `choir/res/`. Git does not track this folder.
+3. In MATLAB, go to `choir/` and type:
    ```matlab
-   run_all          % or: matlab -batch run_all
+   run_all          % or, from a terminal: matlab -batch run_all
    ```
-   It runs `tests/run_tests.m` first (7 checks), then writes every CSV and figure to `choir/results/`.
+4. `run_all` runs `tests/run_tests.m` (7 checks) first. Then it writes all CSV files and figures to `choir/results/`.
 
-Without the dataset, a clearly labeled synthetic stand-in is used, so the code still runs.
+If the dataset is not available, the code uses a synthetic signal, and the figure titles show this.
 
-**Tests** (`choir/tests/run_tests.m`):
-- The CRC reproduces the CRC-16/CCITT-FALSE check value 0x29B1.
-- Frames survive a pack/parse round trip, and one flipped bit is rejected.
-- Measured BER is 0.0118 against the BPSK theory value of 0.0125 at 4 dB.
-- A clean loopback is exact.
-- Pure noise produces 0 logged frames.
-- The baselines are fair without interference.
-- Only the analysis bound can receive the true bits.
+**Tests** (`choir/tests/run_tests.m`)
+- The CRC gives the CRC-16/CCITT-FALSE check value 0x29B1.
+- A frame is the same after packing and parsing, and the parser rejects a frame with one changed bit.
+- The measured BER is 0.0118. The BPSK theory value at 4 dB is 0.0125.
+- A clean loopback through the receiver gives correct frames.
+- Pure noise gives 0 logged frames.
+- Without interference, the baseline receivers are within a few frames of the bound.
+- Only the analysis bound can get the transmitted bits.
 
 ## 7. Data
 
 | Property | Value |
 |---|---|
 | Dataset | telemanom: NASA SMAP and Curiosity (MSL) telemetry with labeled anomalies |
-| Used here | MSL test-set channels, first column (the telemetry value), streamed in label-file order (M-6, M-1, M-2, S-2, P-10, ...) |
-| Values | Pre-scaled to (−1, 1) by the dataset authors, with anonymized channel names, so no physical units are claimed. Quantized to int16 for framing |
-| Format | One `.npy` file per channel, read with a small MATLAB `.npy` reader (`choir/src/telemetry_source.m`) |
-| Source | Hundman et al., KDD 2018; https://github.com/khundman/telemanom; Kaggle mirror `patrickfleith/nasa-anomaly-detection-dataset-smap-msl` |
-| License | The telemanom repository is © 2018 Caltech/JPL under a BSD-style license. We do not redistribute the data |
-| Not real | The radio link (dishes, noise, faults, interferers) is simulated; no multi-dish recording was available |
+| Data used | MSL test-set channels, first column (the telemetry value), in label-file order (M-6, M-1, M-2, S-2, P-10, ...) |
+| Values | Scaled to (−1, 1) by the dataset authors. The channel names are anonymous, so no physical units are given. The values are quantized to int16 for the frames |
+| Format | One `.npy` file per channel. A short MATLAB `.npy` reader reads the files (`choir/src/telemetry_source.m`) |
+| Source | Hundman et al., KDD 2018; https://github.com/khundman/telemanom; Kaggle copy `patrickfleith/nasa-anomaly-detection-dataset-smap-msl` |
+| License | The telemanom repository is © 2018 Caltech/JPL, with a BSD-style license. This repository does not contain the data |
+| Simulated parts | The radio link (dishes, noise, faults, interferers) is simulated. No multi-dish recording was available |
 
 ## 8. Limitations and next steps
 
-- **The RF link is simulated.** Next: real multi-station recordings, such as several SatNOGS stations on one pass.
-- **Uncoded BPSK.** Turbo or LDPC codes would shift every curve several dB to the left without changing the receiver logic.
+- **Simulated radio link.** Next step: recordings from several real stations, for example several SatNOGS stations on one satellite pass.
+- **Uncoded BPSK.** With turbo or LDPC codes, all curves move several dB to the left. The receiver logic stays the same.
 - **Interferer direction.**
-  - Interferers are modeled near the spacecraft's direction, so they share each dish's residual delay.
-  - An interferer far off-axis would need several taps per dish.
-  - One arriving exactly the same way cannot be separated by any dish weighting.
-- **Choir needs verified frames to learn trust.** Interference that is present before any frame verifies is its weak case.
-- **Spoofing.** The checksum guards against noise, not a deliberate spoofer; that would need authenticated frames, such as CCSDS SDLS.
-- **Not built yet:**
-  - Elastic arraying (releasing dishes when the margin allows); the explainer shows it as a planned next step.
+  - The simulation puts interferers near the direction of the spacecraft, so they have the same residual delay at each dish.
+  - An interferer far from that direction needs several filter taps per dish.
+  - No dish weighting can separate an interferer that arrives in the same way as the spacecraft.
+- **Start-up with interference.** Choir needs verified frames to calculate the weights. Interference that is present before the first verified frame is a weak case.
+- **Spoofing.** The checksum detects noise errors. It does not stop an intentional false transmitter, which needs authenticated frames, for example CCSDS SDLS.
+- **Not implemented:**
+  - Elastic arraying, which releases dishes when the margin is sufficient. The explainer shows it as a next step.
   - A Stateflow version of the supervisor.
 
-## 9. Prior work and what is ours
+## 9. Prior work and project contribution
 
 - **Prior work.**
-  - Arraying is decades old in the Deep Space Network.
-  - SUMPLE is Rogstad, IPN Progress Report 42-162 (2005).
-  - JPL modified SUMPLE for wide-band interferers in the beam (NASA Tech Brief NPO-45640) and studied arrays with interfering sources (IPN PR 42-150).
-  - Weighting antennas by known or decoded data is standard in wireless engineering.
-- **Ours.**
-  - A receiver that runs itself and trusts only verified frames: checksum, spacecraft ID and frame count.
-  - It cancels interference from the current frame's statistics, recovers without help, and explains each decision.
-  - It is measured on identical samples against SUMPLE, equal gain, a sync-marker-only version and a bound, including a look-alike spacecraft that the published bandwidth-based fix does not target.
+  - The Deep Space Network has used arraying for decades.
+  - SUMPLE: Rogstad, IPN Progress Report 42-162 (2005).
+  - JPL changed SUMPLE for wide-band interferers in the beam (NASA Tech Brief NPO-45640) and studied arrays with interfering sources (IPN PR 42-150).
+  - Antenna weights from known or decoded data are standard in wireless engineering.
+- **This project.**
+  - A receiver that operates without operator input and calculates the dish weights only from verified frames (CRC, spacecraft ID, and frame count).
+  - It cancels interference with the statistics of the current frame, recovers from faults, and records the cause of each decision.
+  - A comparison on identical samples against SUMPLE, equal gain, a sync-marker-only receiver, and a bound. The tests include a look-alike spacecraft with the same bandwidth, which the published bandwidth-based method does not address.
 
 ## 10. Credits and license
 
-- **Data:** NASA/JPL SMAP and MSL telemetry via telemanom (Hundman, Constantinou, Laporte, Colwell and Soderstrom, KDD 2018).
+- **Data:** NASA/JPL SMAP and MSL telemetry from telemanom (Hundman, Constantinou, Laporte, Colwell, and Soderstrom, KDD 2018).
 - **References:**
   - Rogstad, *The SUMPLE Algorithm for Aligning Arrays of Receiving Radio Antennas*, IPN PR 42-162 (2005).
   - NASA Tech Brief NPO-45640, *Aligning a Receiving Antenna Array to Reduce Interference*.
@@ -218,27 +240,27 @@ Without the dataset, a clearly labeled synthetic stand-in is used, so the code s
 - **Tools:**
   - MATLAB R2026b and `ccsdsTMWaveformGenerator` (Satellite Communications Toolbox).
   - Communications, Signal Processing, DSP System, Statistics and Machine Learning, and Parallel Computing Toolboxes; Simulink.
-- **AI assistance:** the code was written with AI assistance (Devin) during the hackathon, and reviewed and run by the team.
+- **AI assistance:** the code was written with AI assistance (Devin) during the hackathon. The team reviewed and ran the code.
 
-## Project structure
+## Repository structure
 
 ```
 choir/
-├── run_all.m              reproduces every number and figure (runs the tests first)
-├── src/                   the receiver and the simulation
-│   ├── choir_params.m     all settings, fixed before evaluation
+├── run_all.m              calculates all numbers and figures (runs the tests first)
+├── src/                   receiver and simulation
+│   ├── choir_params.m     all settings, frozen before evaluation
 │   ├── frame_pack.m / frame_parse.m     CCSDS-style frames + CRC-16
 │   ├── tx_build.m         ccsdsTMWaveformGenerator transmitter
-│   ├── channel_make.m / channel_slot.m  hidden truth: dishes, faults, interferers
-│   ├── rx_init.m / rx_step.m            the receiver and its supervisor
+│   ├── channel_make.m / channel_slot.m  hidden simulation: dishes, faults, interferers
+│   ├── rx_init.m / rx_step.m            receiver and supervisor
 │   ├── score_run.m        independent scorer
 │   ├── exp_*.m            experiments and figures
-│   └── telemetry_source.m MSL loader (.npy) with a labeled synthetic fallback
-├── tests/run_tests.m      checks that the claims depend on
-├── results/               CSVs, decision and telemetry logs, figures
-├── simulink/              the same receiver stepped inside Simulink
-├── swarm/                 add-on: swarm receivers that learn channel settings together
+│   └── telemetry_source.m MSL reader (.npy), with a labeled synthetic signal if the data is not available
+├── tests/run_tests.m      checks for the results
+├── results/               CSV files, decision and telemetry logs, figures
+├── simulink/              the same receiver in Simulink
+├── swarm/                 add-on: swarm receivers that find the channel settings together
 ├── deck/                  slide sources: make_figs.m, numbers.json, deck.html, figures
-├── docs/                  slides.pdf, choir-explainer.html
-└── res/                   telemanom data (not committed)
+├── docs/                  slides.pdf, speaker_notes.md, choir-explainer.html
+└── res/                   telemanom data (not in Git)
 ```

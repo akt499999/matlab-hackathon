@@ -83,7 +83,7 @@ st = ["SEARCH", "ALIGN", "DECODE", "FALLBACK"];
 imagesc(ax, (1:numel(sNum))*P.Tf, 1, sNum); colormap(ax, [0.85 0.3 0.3; 0.95 0.75 0.2; 0.2 0.65 0.35; 0.95 0.55 0.1]);
 clim(ax, [0.5 4.5]); set(ax, 'YTick', [], 'XLim', [0 F*P.Tf]);
 cb = colorbar(ax, 'Ticks', 1:4, 'TickLabels', st); cb.Label.String = '';
-title(ax, 'Choir supervisor state (decided on its own)');
+title(ax, 'Choir supervisor state (no operator input)');
 ax = nexttile(tl);
 okM = vertcat(out.score.ok);
 imagesc(ax, tF, 1:nr, okM); colormap(ax, [0.9 0.3 0.3; 0.2 0.65 0.35]); clim(ax, [0 1]);

@@ -42,7 +42,7 @@ xlim(ax, [-10 20]); ylim(ax, [0 104]); xticks(ax, inr);
 xlabel(ax, 'Look-alike spacecraft power per dish, relative to ours (dB)');
 ylabel(ax, 'Frames delivered bit-exact (%)');
 text(ax, 19.6, 80, 'Choir', 'Color', P.s1, 'FontWeight', 'bold', 'HorizontalAlignment', 'right');
-text(ax, 19.6, 97, 'bound (knows the data)', 'Color', P.muted, 'HorizontalAlignment', 'right');
+text(ax, 19.6, 97, 'bound (uses the transmitted bits)', 'Color', P.muted, 'HorizontalAlignment', 'right');
 text(ax, 8.2, 18, 'sync-marker only', 'Color', P.s3, 'FontWeight', 'bold');
 text(ax, -9.6, 45, 'SUMPLE', 'Color', P.s2, 'FontWeight', 'bold');
 text(ax, 5.6, 30, 'equal gain', 'Color', P.muted);
@@ -132,7 +132,7 @@ for n = 1:numel(ord)
     text(ax1, x0 + 0.03, yl, names.(f.type), 'Color', P.ink2, 'FontSize', 14, 'VerticalAlignment', 'middle');
 end
 yticks(ax1, []); ax1.YAxis.Visible = 'off'; ax1.XTickLabel = []; ylim(ax1, [0 1]);
-title(ax1, 'Hidden faults (the receiver is never told)');
+title(ax1, 'Hidden faults (not given to the receiver)');
 ax2 = nexttile(tl, [3 1]); hold(ax2, 'on'); grid(ax2, 'on'); ax2.XGrid = 'off';
 plot(ax2, t, 1:F, '--', 'Color', P.context, 'LineWidth', 1.25);
 cols = {P.s1, P.s2, P.context}; lw = [2.5 2 2]; tags = ["choir", "sumple", "nosup"];
@@ -142,7 +142,7 @@ for r = 1:3
     N.("seed301_" + tags(r)) = k(end);
 end
 ylabel(ax2, 'Frames delivered'); ax2.XTickLabel = []; ylim(ax2, [0 F]); yticks(ax2, [0 150 300]);
-text(ax2, 0.3, 215, 'dashed: all 300 frames sent', 'Color', P.muted);
+text(ax2, 0.3, 215, 'dashed line: all 300 frames sent', 'Color', P.muted);
 text(ax2, t(end) + 0.06, 302, sprintf('Choir  %d', N.seed301_choir), 'Color', P.s1, 'FontWeight', 'bold');
 text(ax2, t(end) + 0.06, 236, sprintf('SUMPLE  %d', N.seed301_sumple), 'Color', P.s2, 'FontWeight', 'bold');
 text(ax2, t(end) + 0.06, 170, sprintf('supervisor off  %d', N.seed301_nosup), 'Color', P.muted);

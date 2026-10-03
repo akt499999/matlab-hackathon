@@ -231,11 +231,11 @@ font-family="Helvetica Neue" font-size="32" font-weight="700" font-style="normal
  >Choir</text>
 </g>
 
-<g fill="#6e7781" fill-opacity="1" stroke="#6e7781" stroke-opacity="1" stroke-width="1" stroke-linecap="square" stroke-linejoin="bevel" transform="matrix(0.5,0,0,0.5,359.9,53.976)"
+<g fill="#6e7781" fill-opacity="1" stroke="#6e7781" stroke-opacity="1" stroke-width="1" stroke-linecap="square" stroke-linejoin="bevel" transform="matrix(0.5,0,0,0.5,293.4,53.976)"
 font-family="Helvetica Neue" font-size="32" font-weight="400" font-style="normal" 
 >
 <text fill="#6e7781" fill-opacity="1" stroke="none" xml:space="preserve" x="0" y="0.453125" font-family="Helvetica Neue" font-size="32" font-weight="400" font-style="normal" 
- >bound (knows the data)</text>
+ >bound (uses the transmitted bits)</text>
 </g>
 
 <g fill="#107f65" fill-opacity="1" stroke="#107f65" stroke-opacity="1" stroke-width="1" stroke-linecap="square" stroke-linejoin="bevel" transform="matrix(0.5,0,0,0.5,354.55,282.49)"

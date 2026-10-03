@@ -107,7 +107,7 @@ font-family="Helvetica Neue" font-size="28" font-weight="400" font-style="normal
 font-family="Helvetica Neue" font-size="32" font-weight="400" font-style="normal" 
 >
 <text fill="#15191e" fill-opacity="1" stroke="none" xml:space="preserve" x="0" y="0.453125" font-family="Helvetica Neue" font-size="32" font-weight="400" font-style="normal" 
- >Hidden faults (the receiver is never told)</text>
+ >Hidden faults (not given to the receiver)</text>
 </g>
 
 <g fill="#e6e9ed" fill-opacity="1" stroke="#e6e9ed" stroke-opacity="1" stroke-width="1.5" stroke-linecap="butt" stroke-linejoin="round" transform="matrix(0.5,0,0,0.5,0,0)"
@@ -200,7 +200,7 @@ font-family="Helvetica Neue" font-size="28" font-weight="400" font-style="normal
 font-family="Helvetica Neue" font-size="32" font-weight="400" font-style="normal" 
 >
 <text fill="#6e7781" fill-opacity="1" stroke="none" xml:space="preserve" x="0" y="0.453125" font-family="Helvetica Neue" font-size="32" font-weight="400" font-style="normal" 
- >dashed: all 300 frames sent</text>
+ >dashed line: all 300 frames sent</text>
 </g>
 
 <g fill="#1d63c7" fill-opacity="1" stroke="#1d63c7" stroke-opacity="1" stroke-width="1" stroke-linecap="square" stroke-linejoin="bevel" transform="matrix(0.5,0,0,0.5,687.325,126.297)"

@@ -2,7 +2,7 @@
 <html lang="en">
 <head>
 <meta charset="utf-8">
-<title>Choir: an antenna array that trusts what decodes</title>
+<title>Choir: an autonomous multi-dish receiver for weak spacecraft telemetry</title>
 <style>
 /* Assertion-evidence deck built with the technical-slides template. Every number comes from
    numbers.json (make_figs.m), which reads results/*.csv written by run_all.m. */
@@ -48,155 +48,142 @@ table.data { position: absolute; top: var(--fig-top); left: calc(var(--mx) - 8pt
         justify-content: space-between; gap: 0.5in; font-size: 9.5pt; color: var(--muted); }
 .foot .n { font-variant-numeric: tabular-nums; white-space: nowrap; }
 .title h1 { margin-top: 1.7in; font-size: 40pt; line-height: 1.08; letter-spacing: -0.018em; max-width: 11in; }
-.title .sub { margin-top: 20pt; font-size: 18pt; line-height: 1.35; color: var(--ink2); max-width: 10.4in; }
+.title .sub { margin-top: 20pt; font-size: 18pt; line-height: 1.35; color: var(--ink2); max-width: 10.6in; }
 .title .meta { position: absolute; left: var(--mx); bottom: 0.55in; font-size: 11pt; color: var(--muted); }
-.todo { position: absolute; top: var(--fig-top); left: var(--mx); width: 12.1in; height: 4.9in;
-        border: 1.25pt dashed var(--rule); padding: 0.4in; font-size: 16pt; line-height: 1.45; color: var(--ink2); }
 </style>
 </head>
 <body>
 
 <section class="slide title">
-  <h1>Choir keeps <span class="v1">88.5%</span> of telemetry frames when a look-alike spacecraft is 10&nbsp;dB louder</h1>
-  <p class="sub">An autonomous 8-dish receiver in MATLAB that learns which dishes to trust only from verified frames. Real NASA Curiosity (MSL) telemetry through a simulated radio link; JPL's blind SUMPLE method keeps 0%.</p>
+  <h1>Choir delivered 88.5% of telemetry frames when a look-alike spacecraft was 10&nbsp;dB stronger</h1>
+  <p class="sub">Choir is an autonomous MATLAB receiver for 8 simulated dishes. It calculates the dish weights only from frames that pass three checks. The telemetry is real NASA Curiosity (MSL) data; the radio link is simulated. With the same samples, JPL's SUMPLE method delivered 0%.</p>
   <p class="meta">MATLAB in Space Hackathon, Track 1: Deep-Space Communication &amp; Signal Intelligence. Northeastern University, 3 October 2026</p>
 </section>
 
 <section class="slide">
-  <h2>One idea, built twice: an 8-dish MATLAB receiver and a 3-LED breadboard that both trust what decodes</h2>
+  <h2>The project has two parts: a MATLAB receiver with 8 simulated dishes and a breadboard demo with 3 LEDs</h2>
   <table class="data">
     <thead>
-      <tr><th>Part</th><th>What we built</th><th>What it shows</th></tr>
+      <tr><th>Part</th><th>Content</th><th>Evidence</th></tr>
     </thead>
     <tbody>
-      <tr><td>Track 1 brief</td><td>Find, clean and decode weak radio signals with no human tuning</td><td>Asked for: filter, acquire or re-acquire, decoded telemetry, before/after spectra</td></tr>
-      <tr class="tight"><td>Software: Choir<span class="sub">MATLAB R2026b</span></td><td>Real NASA Curiosity (MSL) telemetry in CCSDS frames, sent to 8 simulated dishes with hidden faults. Dish weights are learned only from frames that pass the CRC, carry our spacecraft ID and continue the frame count<span class="sub">Telemetry is real; the radio link is simulated (no benchmark radio clips used)</span></td><td>Measured results on the next slides</td></tr>
-      <tr><td>Hardware: Choir on a breadboard<span class="sub">Raspberry Pi Pico</span></td><td>3 LEDs take turns sending the same Morse frame (sync, ID C, counter, MATLAB, checksum) to one photoresistor. Each round a hidden fault garbles one LED, corrupts its payload, or puts a look-alike frame on 2 of 3</td><td>Live: raw vs filtered light signal, majority vote vs Choir's checks, decoded message in the terminal</td></tr>
-      <tr><td>Choir swarm<span class="sub">add-on</span></td><td>Several receivers search carrier frequency, phase, timing and gain together (particle swarm), using a known training message</td><td>Last slide</td></tr>
+      <tr><td>Track 1 task</td><td>Find, clean, and decode weak radio signals with no human tuning</td><td>Required: filter, acquire or re-acquire, decoded telemetry, before/after spectra</td></tr>
+      <tr class="tight"><td>Software: Choir<span class="sub">MATLAB R2026b</span></td><td>Real NASA Curiosity (MSL) telemetry in CCSDS frames goes to 8 simulated dishes with hidden faults. The dish weights come only from frames with a correct CRC, the correct spacecraft ID, and the next frame count<span class="sub">The telemetry is real. The radio link is simulated. No benchmark radio clips are used</span></td><td>Measured results on slides 3 to 9</td></tr>
+      <tr><td>Hardware: Choir on a breadboard<span class="sub">Raspberry Pi Pico</span></td><td>3 LEDs send the same Morse frame (sync, ID C, counter, MATLAB, checksum) in sequence to one photoresistor. In each round, a hidden fault adds flicker to one LED, changes its payload, or sends a look-alike frame on 2 of 3 LEDs</td><td>Live: raw and filtered light signal, majority vote and Choir checks, decoded message in the terminal</td></tr>
+      <tr><td>Choir swarm<span class="sub">add-on</span></td><td>Several receivers find the carrier frequency, phase, timing, and gain together (particle swarm). They use a known training message</td><td>Slide 12</td></tr>
     </tbody>
   </table>
-  <footer class="foot"><span>Track text: MATLAB in Space Devpost page. Hardware code: main.py (Pico, MicroPython) and morse_gui.py (laptop view)</span><span class="n"></span></footer>
+  <footer class="foot"><span>Track text: MATLAB in Space Devpost page. Hardware: Pico code (MicroPython) and a laptop display program</span><span class="n"></span></footer>
 </section>
 
 <section class="slide">
-  <h2>One dish needs about 8&nbsp;dB to decode a frame; eight dishes decode every frame at <span class="v1 nw">2&nbsp;dB</span> each</h2>
-  <figure class="fig"><img src="figs/snr.svg" alt="Frames delivered vs mean Es/N0 per dish, single dish vs 8-dish receivers"></figure>
+  <h2>One dish needs approximately 8&nbsp;dB to decode a frame; 8 dishes decoded all frames at <span class="nw">2&nbsp;dB</span> each</h2>
+  <figure class="fig"><img src="../results/figures/snr.png" alt="MATLAB figure: frames delivered against mean Es/N0 per dish, one dish and 8-dish receivers" style="height:5.2in"></figure>
   <aside class="side">
     <div class="stat"><b>99.6%</b><span>best single dish at 8&nbsp;dB</span></div>
     <div class="stat"><b>15.2%</b><span>best single dish at 4&nbsp;dB</span></div>
-    <div class="stat"><b>100%</b><span>Choir, 8 dishes at 2&nbsp;dB</span></div>
-    <p class="note">Gray: the other 8-dish methods (equal gain, SUMPLE, sync-marker only). Without interference Choir matches them; its gain is robustness.</p>
+    <div class="stat"><b>100%</b><span>Choir with 8 dishes at 2&nbsp;dB</span></div>
+    <p class="note">Gray line: the best single dish. Without interference, the other 8-dish receivers (equal gain, SUMPLE, sync-marker only) give almost the same results as Choir.</p>
   </aside>
-  <footer class="foot"><span>Sim: uncoded BPSK CCSDS frames, 8 dishes (±3&nbsp;dB spread), 10 fresh seeds × 50 frames per point. results/snr_summary.csv, deck/make_figs.m</span><span class="n"></span></footer>
+  <footer class="foot"><span>Simulation: uncoded BPSK CCSDS frames, 8 dishes (±3&nbsp;dB spread), 10 new seeds × 50 frames per point. Data: results/snr_summary.csv. Script: deck/make_figs.m</span><span class="n"></span></footer>
 </section>
 
 <section class="slide">
-  <h2>Choir runs itself in four states and learns dish weights only from frames that pass three checks</h2>
+  <h2>Choir operates in four states without operator input and calculates the dish weights only from verified frames</h2>
   <table class="data">
     <thead>
-      <tr><th>State</th><th>What Choir does</th><th>Moves on when</th></tr>
+      <tr><th>State</th><th>Function</th><th>Next state</th></tr>
     </thead>
     <tbody>
-      <tr><td>SEARCH</td><td>Squares the BPSK signal so the carrier shows as a tone; sums spectra over all 8 dishes</td><td>A peak stands 12× above the median</td></tr>
-      <tr><td>ALIGN</td><td>Finds the sync marker over one frame period on every dish: frame timing and <span class="nw">per-dish</span> delay<span class="sub">Frames from another spacecraft ID are rejected</span></td><td>A frame passes all three checks</td></tr>
-      <tr class="tight"><td>DECODE</td><td>Weights w = Q<sup>−1</sup>h. h is learned only from frames with a valid CRC, our spacecraft ID 42 and the next frame count; Q is everything else the dishes hear<span class="sub">A dish that stops matching verified frames is re-timed or excluded</span></td><td>3 bad frames in a row</td></tr>
-      <tr><td>FALLBACK</td><td>Re-times every dish on the sync marker; equal weights</td><td>A frame verifies, or 8 bad frames send it back to SEARCH</td></tr>
+      <tr><td>SEARCH</td><td>Squares the BPSK signal to show the carrier as a tone. Adds the spectra of all 8 dishes</td><td>ALIGN, when a spectral peak is 12 times the median</td></tr>
+      <tr><td>ALIGN</td><td>Finds the sync marker in one frame period on each dish. This gives the frame timing and the delay of each dish<span class="sub">Rejects frames with a different spacecraft ID</span></td><td>DECODE, when a frame passes the three checks</td></tr>
+      <tr class="tight"><td>DECODE</td><td>Uses the weights w = Q<sup>−1</sup>h. h comes only from frames with a correct CRC, spacecraft ID 42, and the next frame count. Q is the rest of the received signal<span class="sub">A dish that does not match the verified frames is re-timed or removed</span></td><td>FALLBACK, after 3 bad frames in sequence</td></tr>
+      <tr><td>FALLBACK</td><td>Re-times each dish on the sync marker. Uses equal weights</td><td>DECODE, when a frame passes the checks. SEARCH, after 8 bad frames in sequence</td></tr>
     </tbody>
   </table>
-  <footer class="foot"><span>Implementation: src/rx_step.m (receiver and supervisor). Waveform: ccsdsTMWaveformGenerator, Satellite Communications Toolbox</span><span class="n"></span></footer>
+  <footer class="foot"><span>Code: src/rx_step.m (receiver and supervisor). Waveform: ccsdsTMWaveformGenerator, Satellite Communications Toolbox</span><span class="n"></span></footer>
 </section>
 
 <section class="slide">
-  <h2>Against a look-alike spacecraft 10&nbsp;dB louder, Choir delivers <span class="v1">88.5%</span> of frames and SUMPLE 0%</h2>
-  <figure class="fig"><img src="figs/lookalike.svg" alt="Frames delivered vs look-alike power for each receiver"></figure>
-  <aside class="side">
-    <div class="stat"><b>85.0%</b><span>sync-marker only at +10&nbsp;dB: Choir's math, trust from 32 known bits</span></div>
-    <div class="stat"><b>7.3% vs 87.8%</b><span>sync-marker only vs Choir at +20&nbsp;dB</span></div>
-    <div class="stat"><b>0</b><span>frames logged with wrong data, all interference runs</span></div>
+  <h2>With a look-alike spacecraft 10&nbsp;dB stronger, Choir delivered 88.5% of frames and SUMPLE delivered 0%</h2>
+  <figure class="fig"><img src="../results/figures/interference.png" alt="MATLAB figure: frames delivered against interferer power for each receiver, wide-band source and look-alike spacecraft" style="height:5.2in"></figure>
+  <footer class="foot"><span>Right panel: look-alike (same CCSDS format and band, ID 21). Sync-marker only: 85.0% at +10&nbsp;dB, 7.3% at +20&nbsp;dB (Choir 87.8%). Frames logged with incorrect data: 0. 10 new seeds × 40 frames per point. Data: results/interference_summary.csv</span><span class="n"></span></footer>
+</section>
+
+<section class="slide">
+  <h2>With a +10&nbsp;dB wide-band source, the Choir output noise floor was <span class="nw">0.1&nbsp;dB</span> and the SUMPLE output noise floor was 16.0&nbsp;dB</h2>
+  <figure class="fig"><img src="../results/figures/spectra.png" alt="MATLAB figure: power spectra before combining (one dish) and after combining (SUMPLE, Choir), without and with a wide-band source" style="width:12.1in"></figure>
+  <footer class="foot"><span>Simulation: one frame at a mean of 2&nbsp;dB Es/N0 per dish. Levels in dB relative to the thermal noise of one dish; combined outputs scaled to the same noise. Seeds 201–202. Script: deck/make_figs.m</span><span class="n"></span></footer>
+</section>
+
+<section class="slide">
+  <h2>With six hidden faults per run, Choir delivered 90.6% of frames and recovered 284&nbsp;ms after a carrier hop</h2>
+  <figure class="fig"><img src="../results/figures/timeline.png" alt="MATLAB figure: hidden faults, Choir state, frames delivered per receiver, and dish weights in one run" style="height:5.2in"></figure>
+  <aside class="side" style="left:calc(var(--mx) + 9.2in)">
+    <div class="stat"><b>77.7%</b><span>SUMPLE with the same supervisor (mean of 20 runs)</span></div>
+    <div class="stat"><b>40.0%</b><span>Choir with the supervisor off</span></div>
+    <div class="stat"><b>0</b><span>frames logged with incorrect data</span></div>
   </aside>
-  <footer class="foot"><span>Sim: same CCSDS format and band, ID 21, 8 dishes at mean 2&nbsp;dB Es/N0; 10 fresh seeds × 40 frames per point, identical samples for every receiver. results/interference_summary.csv</span><span class="n"></span></footer>
+  <footer class="foot"><span>Simulation: 20 runs × 300 frames, faults at random times from seeds. The plot shows seed 301. Means of 20 runs: SUMPLE with the same supervisor 77.7%, Choir with the supervisor off 40.0%. Data: results/faults_summary.csv</span><span class="n"></span></footer>
 </section>
 
 <section class="slide">
-  <h2>Under a +10&nbsp;dB wide-band source, Choir holds the noise floor at <span class="v1 nw">0.1&nbsp;dB</span> while SUMPLE's rises to 16.0&nbsp;dB</h2>
-  <figure class="fig"><img src="figs/spectra.svg" alt="Power spectra before (one dish) and after combining (SUMPLE, Choir), clean and with a wide-band source"></figure>
-  <footer class="foot"><span>Sim: one frame at mean 2&nbsp;dB Es/N0 per dish; dB relative to one dish's thermal noise, combined outputs scaled to equal noise; seeds 201–202. deck/make_figs.m</span><span class="n"></span></footer>
+  <h2>Choir recorded each hidden fault in its log within <span class="nw">2 frames</span> (57&nbsp;ms) and gave the cause</h2>
+  <figure class="fig"><img src="figs/matlab_decision_log.png" alt="MATLAB table: Choir decision log for seed 301" style="width:12.1in"></figure>
+  <p class="note" style="position:absolute; top:calc(var(--fig-top) + 3.35in); left:var(--mx); width:12.1in; font-size:14pt">Hidden faults (truth, not given to the receiver): look-alike from 0.79&nbsp;s, dish 2 fails from 2.19&nbsp;s, dish 6 noise × 10 from 3.41&nbsp;s, fade on all dishes from 4.74&nbsp;s, clock error on dish 1 at 5.99&nbsp;s, carrier hop of +1363&nbsp;Hz at 7.09&nbsp;s. Each fault has a log entry within 2 frames.</p>
+  <footer class="foot"><span>MATLAB table (uitable) of results/decision_log_seed301.csv, seed 301; frame period 28.4&nbsp;ms. Truth: results/hidden_faults_seed301.csv. Script: deck/make_matlab_shots.m</span><span class="n"></span></footer>
 </section>
 
 <section class="slide">
-  <h2>With six hidden faults per run, Choir delivers <span class="v1">90.6%</span> of frames and is back 284&nbsp;ms after a carrier hop</h2>
-  <figure class="fig"><img src="figs/faults.svg" alt="Hidden faults, cumulative frames delivered, and Choir state over one run"></figure>
-  <footer class="foot"><span>Sim: 20 runs × 300 frames, faults at seeded random times; run shown is seed 301. Means over 20 runs: SUMPLE + same supervisor 77.7%, Choir with supervisor off 40.0%. results/faults_summary.csv</span><span class="n"></span></footer>
+  <h2>The same receiver code runs in Simulink, one frame per step, and delivered 275 of 300 frames, the same as in MATLAB</h2>
+  <figure class="fig" style="display:flex; gap:0.3in; align-items:flex-start">
+    <img src="../simulink/choir_sim_diagram.png" alt="Simulink block diagram of choir_sim" style="width:5.6in">
+    <img src="../simulink/choir_sim_outputs.png" alt="Simulink scope signals from choir_sim" style="height:5.2in">
+  </figure>
+  <footer class="foot"><span>Left: Simulink model choir_sim. Right: logged signals. A Level-2 MATLAB S-Function steps src/rx_step.m; seed 301, 300 frames. Same result as results/faults_raw.mat</span><span class="n"></span></footer>
 </section>
 
 <section class="slide">
-  <h2>Choir logged each hidden fault within <span class="nw">2 frames</span> (57&nbsp;ms) of its start, with the reason</h2>
+  <h2>In the breadboard demo, a look-alike frame on 2 of 3 LEDs is designed to win the majority vote; Choir rejects it because of its ID</h2>
   <table class="data">
     <thead>
-      <tr><th>Hidden fault (truth)</th><th class="r">Frame</th><th>Choir's log entry</th><th class="r">Delay</th></tr>
+      <tr><th>Hidden fault (one per round)</th><th>Signal at the photoresistor</th><th>Majority vote<span class="sub">uses the most common frame</span></th><th>Choir<span class="sub">accepts only verified frames</span></th></tr>
     </thead>
     <tbody>
-      <tr><td>Look-alike spacecraft, +10&nbsp;dB</td><td class="r">29</td><td>Strong extra source reaches 8 dishes (21&nbsp;dB over noise); weights now cancel it</td><td class="r">0</td></tr>
-      <tr><td>Dish 2 dead</td><td class="r">78</td><td>Dish 2 stopped matching verified frames (fit 0.80 to 0.01): excluded</td><td class="r">1</td></tr>
-      <tr><td>Dish 6 noise ×10</td><td class="r">121</td><td>Dish 6 is 9&nbsp;dB noisier than the floor; its weight drops</td><td class="r">0</td></tr>
-      <tr><td>Fade, all dishes, −30&nbsp;dB</td><td class="r">168</td><td>3 bad frames in a row: every dish re-timed on the sync marker</td><td class="r">2</td></tr>
-      <tr><td>Clock glitch, dish 1, −12 samples</td><td class="r">212</td><td>Dish 1 stopped matching verified frames; timing moved −12 samples</td><td class="r">0</td></tr>
-      <tr><td>Carrier hop, +1363&nbsp;Hz</td><td class="r">251</td><td>3 bad frames in a row: safe mode, then carrier found at +1440.5&nbsp;Hz</td><td class="r">2</td></tr>
+      <tr><td>Flicker on one LED</td><td>One copy has errors from flicker</td><td>The 2 correct copies agree: correct</td><td>The copy with errors fails the checksum; a correct copy is logged</td></tr>
+      <tr><td>Changed payload</td><td>One copy has incorrect letters and the old checksum</td><td>The 2 correct copies agree: correct</td><td>That copy fails the checksum; a correct copy is logged</td></tr>
+      <tr class="tight"><td>Look-alike on 2 of 3 LEDs</td><td>Two copies with ID Q, payload DECOY, and a correct checksum</td><td>DECOY wins 2 to 1: incorrect</td><td>Both copies are rejected (ID Q, not C); the correct copy is logged</td></tr>
     </tbody>
   </table>
-  <footer class="foot"><span>Seed 301. Delay in frames of 28.4&nbsp;ms. results/decision_log_seed301.csv and hidden_faults_seed301.csv (truth, never shown to the receiver)</span><span class="n"></span></footer>
+  <footer class="foot"><span>Expected behavior from the team's Pico code (MicroPython): majority vote and three checks; the truth is shown after both decisions; live scoreboard on the laptop. Assumes that one correct copy is decoded. Light intensities add, so this demo shows the acceptance rule, not radio combining.</span><span class="n"></span></footer>
 </section>
 
 <section class="slide">
-  <h2>The same receiver also runs inside Simulink, one frame per step, and delivers 275 of 300 frames as in MATLAB</h2>
-  <figure class="fig"><img src="figs/simulink.png" alt="Simulink model outputs" style="height:5.2in"></figure>
-  <footer class="foot"><span>choir/simulink: Level-2 MATLAB S-Function stepping src/rx_step.m; seed 301, 300 frames. Matches results/faults_raw.mat</span><span class="n"></span></footer>
-</section>
-
-<section class="slide">
-  <h2>On the breadboard, a look-alike frame on 2 of 3 LEDs is built to win the majority vote; Choir rejects it by its ID</h2>
+  <h2>No receiver separated the spacecraft from a look-alike with a similar arrival pattern (similarity 0.81)</h2>
   <table class="data">
     <thead>
-      <tr><th>Hidden fault (one per round)</th><th>What reaches the photoresistor</th><th>Majority vote<span class="sub">trusts what agrees</span></th><th>Choir<span class="sub">trusts what verifies</span></th></tr>
+      <tr><th>Limitation</th><th>Measured effect</th><th>Next step</th></tr>
     </thead>
     <tbody>
-      <tr><td>Noisy LED</td><td>One copy garbled by flicker</td><td>The 2 clean copies agree: correct</td><td>Garbled copy fails the checksum; a clean copy is logged</td></tr>
-      <tr><td>Corrupted payload</td><td>One copy with wrong letters but the old checksum</td><td>The 2 true copies agree: correct</td><td>That copy fails the checksum; a true copy is logged</td></tr>
-      <tr class="tight"><td>Look-alike on 2 of 3 LEDs</td><td>Two copies with ID Q, payload DECOY and a valid checksum</td><td>DECOY wins 2 to 1: wrong</td><td>Both rejected (ID Q is not C); the true copy is logged</td></tr>
+      <tr class="tight"><td>Look-alike with a similar arrival pattern</td><td>Seed 304, similarity 0.81 (other seeds 0.16–0.58): all receivers failed, including the bound that uses the transmitted bits</td><td>Separate the signals by frequency or code, not by dish weights</td></tr>
+      <tr><td>Weak signal without interference</td><td>Choir 27.8%, SUMPLE 32.6% at −2&nbsp;dB per dish</td><td>None: the advantage of Choir is resistance to interference and faults</td></tr>
+      <tr><td>Simulated radio link</td><td>The telemetry is real NASA MSL data; dishes, noise, and faults are simulated</td><td>Recordings from several real stations</td></tr>
+      <tr><td>Uncoded BPSK</td><td>One dish needs approximately 8&nbsp;dB; LDPC or turbo codes need several dB less</td><td>Add coding; the receiver logic stays the same</td></tr>
     </tbody>
   </table>
-  <footer class="foot"><span>By design of the team's Pico code (MicroPython: majority vote vs three checks; truth revealed after both decide; live scoreboard on the laptop), assuming one clean copy decodes. Light adds as brightness: this shows the trust rule, not radio combining.</span><span class="n"></span></footer>
+  <footer class="foot"><span>Similarity = |a<sup>H</sup>b| / (‖a‖‖b‖) of the two signals across the 8 dishes. Data: results/interference_runs.csv. Script: deck/make_figs.m</span><span class="n"></span></footer>
 </section>
 
 <section class="slide">
-  <h2>Choir fails where any array must: a look-alike arriving like our spacecraft (similarity 0.81) defeats every receiver</h2>
-  <table class="data">
-    <thead>
-      <tr><th>Limit</th><th>Measured effect</th><th>Next step</th></tr>
-    </thead>
-    <tbody>
-      <tr class="tight"><td>Look-alike from the same direction</td><td>Seed 304, similarity 0.81 (others 0.16–0.58): every receiver fails, even the bound that knows the data</td><td>Separate by frequency or code, not by dishes</td></tr>
-      <tr><td>No interference, weak signal</td><td>Choir 27.8% vs SUMPLE 32.6% at −2&nbsp;dB per dish</td><td>Its gain is robustness, not sensitivity</td></tr>
-      <tr><td>Simulated radio link</td><td>Telemetry is real NASA MSL; dishes, noise and faults are simulated</td><td>Real multi-station recordings</td></tr>
-      <tr><td>Uncoded BPSK</td><td>One dish needs about 8&nbsp;dB; LDPC or turbo codes need several dB less</td><td>Add coding; receiver logic unchanged</td></tr>
-    </tbody>
-  </table>
-  <footer class="foot"><span>Similarity = |a<sup>H</sup>b| / (‖a‖‖b‖) of the two signals across the 8 dishes. results/interference_runs.csv, deck/make_figs.m</span><span class="n"></span></footer>
-</section>
-
-<section class="slide">
-  <h2>Swarm receivers learned each carrier offset to within 0.6&nbsp;Hz and decoded two of three test messages with 0 bit errors</h2>
-  <table class="data">
-    <thead>
-      <tr><th>Message, Es/N0, receivers</th><th class="r">True offset</th><th class="r">Learned</th><th>True vs learned phase, timing</th><th>Decoded</th></tr>
-    </thead>
-    <tbody>
-      <tr class="tight"><td>HELLO FROM MARS, 8&nbsp;dB, 8 receivers</td><td class="r">40&nbsp;Hz</td><td class="r">39.5&nbsp;Hz</td><td>30° vs 41.6°; 2.40 vs 2.95 samples</td><td>0 bit errors, 14 rounds</td></tr>
-      <tr><td>HI TEAM, 6&nbsp;dB, 10 receivers</td><td class="r">100&nbsp;Hz</td><td class="r">99.7&nbsp;Hz</td><td>45° vs 48.6°; 4.00 vs 4.72 samples</td><td>0 bit errors, 10 rounds</td></tr>
-      <tr><td>DEEP SPACE LINK TEST, 4&nbsp;dB, 12 receivers</td><td class="r">−180&nbsp;Hz</td><td class="r">−179.4&nbsp;Hz</td><td>120° vs 105°; 6.40 vs 6.06 samples</td><td>3 of 160 bits wrong; BPSK theory predicts about 2 at 4&nbsp;dB</td></tr>
-    </tbody>
-  </table>
-  <footer class="foot"><span>Add-on: choir/swarm/swarm_receivers.m (plain MATLAB; particle swarm over frequency, phase, timing, gain). Receivers know the message (a training sequence). Numbers as reported in choir/swarm/README.md</span><span class="n"></span></footer>
+  <h2>The swarm receivers found each carrier offset within 0.6&nbsp;Hz and decoded two of three test messages with 0 bit errors</h2>
+  <figure class="fig"><img src="../swarm/results/swarm_convergence.png" alt="MATLAB figure: swarm error, frequency, phase and timing per round, and symbols before and after" style="height:5.2in"></figure>
+  <aside class="side" style="left:calc(var(--mx) + 7.5in)">
+    <div class="stat"><b>39.5&nbsp;Hz</b><span>found for a 40&nbsp;Hz offset; HELLO FROM MARS, 8&nbsp;dB: 0 bit errors</span></div>
+    <div class="stat"><b>99.7&nbsp;Hz</b><span>found for a 100&nbsp;Hz offset; HI TEAM, 6&nbsp;dB: 0 bit errors</span></div>
+    <div class="stat"><b>−179.4&nbsp;Hz</b><span>found for a −180&nbsp;Hz offset; 4&nbsp;dB: 3 of 160 bits wrong (BPSK theory: approximately 2)</span></div>
+    <p class="note">The figure shows one other run (results/swarm_log.csv). The three values are the runs in the swarm README.</p>
+  </aside>
+  <footer class="foot"><span>Add-on: choir/swarm/swarm_receivers.m (MATLAB, particle swarm for frequency, phase, timing, and gain). The receivers know the message (training sequence). Figure: choir/swarm/results/swarm_convergence.png</span><span class="n"></span></footer>
 </section>
 
 <script>
