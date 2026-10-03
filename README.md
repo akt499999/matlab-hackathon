@@ -149,8 +149,7 @@ The hidden carrier hop was +1363 Hz. With the initial offset (40 Hz) and the dri
   - For seed 301, it delivered 275 of 300 frames, the same as the MATLAB run.
   - To run it, use `build_choir_sim`, then `run_choir_sim`.
 - **Swarm receivers** (`choir/swarm/`, add-on).
-  - You type a message and a noise level. The program then finds the best receiver settings for that noise level on its own.
-  - Several receivers that know the message each try different settings (carrier frequency, phase, timing, gain). Each round they move toward the best receiver's settings (particle swarm) until they reach the lowest error possible at that noise level.
+  - Several receivers find the carrier frequency, phase, timing, and gain together with a particle swarm method. They use a known training message.
   - In three reported runs, the error in each carrier offset was 0.6 Hz or less.
   - Two messages had 0 bit errors. The third message, at 4 dB, had 3 of 160 bits wrong, which is near the BPSK noise limit.
   - It runs in MATLAB with no toolboxes; see `choir/swarm/README.md`.

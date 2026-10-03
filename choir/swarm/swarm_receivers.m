@@ -1,6 +1,6 @@
 function result = swarm_receivers(message, EsN0dB, freqOffsetHz, phaseDeg, timingFrac, nRx)
-%SWARM_RECEIVERS Type a message and a noise level; find the best receiver settings for it.
-%   The message is sent as BPSK with the chosen noise plus random frequency, phase and timing offsets.
+%SWARM_RECEIVERS Several receivers learn the exact channel settings together.
+%   A typed message is sent as BPSK through a channel with user-set noise and impairments.
 %   Every receiver knows the real message and starts from different settings. Each round,
 %   each receiver decodes the signal with its current carrier-frequency and timing guess,
 %   solves the phase and gain that best match the known message, and scores itself by how
@@ -8,8 +8,8 @@ function result = swarm_receivers(message, EsN0dB, freqOffsetHz, phaseDeg, timin
 %   own best and toward the best receiver so far (particle swarm). Because the noise level is
 %   known, the receivers know the best score physically possible and stop when they reach it.
 %
-%   swarm_receivers                   % asks for a message and a noise level
-%   swarm_receivers('HELLO MARS', 8)  % message, noise level as Es/N0 in dB
+%   swarm_receivers                                  % prompts (interactive) or defaults (-batch)
+%   swarm_receivers('HELLO MARS', 8, 40, 30, 0.3, 8) % message, Es/N0 dB, freq Hz, phase deg, timing (0-1 symbol), receivers
 
 defaults = {'HELLO FROM MARS', 8, 40, 30, 0.3, 8};
 if nargin == 0 && ~batchStartupOptionUsed
@@ -23,7 +23,7 @@ else
     if nargin >= 4, given{4} = phaseDeg; end
     if nargin >= 5, given{5} = timingFrac; end
     if nargin >= 6, given{6} = nRx; end
-    if nargin <= 2
+    if nargin >= 1 && nargin <= 2
         rng("shuffle");
         args(3:5) = {round(400 * rand - 200), round(360 * rand - 180), round(rand, 2)};
     end
@@ -248,11 +248,10 @@ fprintf("\n--- Swarm receivers: press Enter to keep each default ---\n");
 message = input(sprintf("Message [%s]: ", d{1}), "s");
 if isempty(strtrim(message)), message = d{1}; end
 EsN0dB = num(input(sprintf("Noise: signal strength Es/N0 in dB, lower = noisier [%g]: ", d{2}), "s"), d{2});
-rng("shuffle");
-f = round(400 * rand - 200);
-ph = round(360 * rand - 180);
-tau = round(rand, 2);
-nRx = d{6};
+f = num(input(sprintf("Carrier frequency offset in Hz, -250 to 250 [%g]: ", d{3}), "s"), d{3});
+ph = num(input(sprintf("Phase offset in degrees [%g]: ", d{4}), "s"), d{4});
+tau = num(input(sprintf("Timing offset as a fraction of a symbol, 0 to 1 [%g]: ", d{5}), "s"), d{5});
+nRx = round(num(input(sprintf("Number of receivers [%g]: ", d{6}), "s"), d{6}));
 end
 
 function v = num(s, d)

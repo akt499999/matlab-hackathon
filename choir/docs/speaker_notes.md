@@ -55,8 +55,7 @@ These notes are for `slides.pdf` (12 slides). The talk is 5 minutes, so each sli
 - The radio link is simulated, and the frames are uncoded.
 
 **12. Swarm add-on.**
-- You type a message and a noise level; the program finds the best receiver settings for that noise level by itself.
-- Several receivers that know the message try different settings and move toward whichever receiver does best, until they reach the lowest error possible at that noise level.
+- Several receivers find the carrier frequency, phase, timing, and gain together. They use a known training message.
 - In three reported runs, the frequency error was 0.6 Hz or less.
 
 ## Answers to possible questions
