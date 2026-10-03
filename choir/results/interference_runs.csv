@@ -1,0 +1,841 @@
+interferer,inr_dB,seed,receiver,correct_frames,frames,false_accepts
+wideband,-10,301,best single dish,0,40,0
+wideband,-10,301,equal gain,40,40,0
+wideband,-10,301,SUMPLE (blind consensus),40,40,0
+wideband,-10,301,sync-marker only,40,40,0
+wideband,-10,301,Choir (verified frames),40,40,0
+wideband,-10,301,bound: knows the data,40,40,0
+wideband,-5,301,best single dish,0,40,0
+wideband,-5,301,equal gain,40,40,0
+wideband,-5,301,SUMPLE (blind consensus),40,40,0
+wideband,-5,301,sync-marker only,40,40,0
+wideband,-5,301,Choir (verified frames),40,40,0
+wideband,-5,301,bound: knows the data,40,40,0
+wideband,0,301,best single dish,0,40,0
+wideband,0,301,equal gain,39,40,0
+wideband,0,301,SUMPLE (blind consensus),38,40,0
+wideband,0,301,sync-marker only,40,40,0
+wideband,0,301,Choir (verified frames),40,40,0
+wideband,0,301,bound: knows the data,40,40,0
+wideband,5,301,best single dish,0,40,0
+wideband,5,301,equal gain,26,40,0
+wideband,5,301,SUMPLE (blind consensus),3,40,0
+wideband,5,301,sync-marker only,40,40,0
+wideband,5,301,Choir (verified frames),40,40,0
+wideband,5,301,bound: knows the data,40,40,0
+wideband,10,301,best single dish,0,40,0
+wideband,10,301,equal gain,0,40,0
+wideband,10,301,SUMPLE (blind consensus),0,40,0
+wideband,10,301,sync-marker only,39,40,0
+wideband,10,301,Choir (verified frames),40,40,0
+wideband,10,301,bound: knows the data,40,40,0
+wideband,15,301,best single dish,0,40,0
+wideband,15,301,equal gain,0,40,0
+wideband,15,301,SUMPLE (blind consensus),0,40,0
+wideband,15,301,sync-marker only,38,40,0
+wideband,15,301,Choir (verified frames),40,40,0
+wideband,15,301,bound: knows the data,40,40,0
+wideband,20,301,best single dish,0,40,0
+wideband,20,301,equal gain,0,40,0
+wideband,20,301,SUMPLE (blind consensus),0,40,0
+wideband,20,301,sync-marker only,34,40,0
+wideband,20,301,Choir (verified frames),39,40,0
+wideband,20,301,bound: knows the data,40,40,0
+lookalike,-10,301,best single dish,0,40,0
+lookalike,-10,301,equal gain,40,40,0
+lookalike,-10,301,SUMPLE (blind consensus),40,40,0
+lookalike,-10,301,sync-marker only,40,40,0
+lookalike,-10,301,Choir (verified frames),40,40,0
+lookalike,-10,301,bound: knows the data,40,40,0
+lookalike,-5,301,best single dish,0,40,0
+lookalike,-5,301,equal gain,40,40,0
+lookalike,-5,301,SUMPLE (blind consensus),40,40,0
+lookalike,-5,301,sync-marker only,40,40,0
+lookalike,-5,301,Choir (verified frames),40,40,0
+lookalike,-5,301,bound: knows the data,40,40,0
+lookalike,0,301,best single dish,0,40,0
+lookalike,0,301,equal gain,38,40,0
+lookalike,0,301,SUMPLE (blind consensus),0,40,0
+lookalike,0,301,sync-marker only,40,40,0
+lookalike,0,301,Choir (verified frames),40,40,0
+lookalike,0,301,bound: knows the data,40,40,0
+lookalike,5,301,best single dish,0,40,0
+lookalike,5,301,equal gain,0,40,0
+lookalike,5,301,SUMPLE (blind consensus),0,40,0
+lookalike,5,301,sync-marker only,40,40,0
+lookalike,5,301,Choir (verified frames),40,40,0
+lookalike,5,301,bound: knows the data,40,40,0
+lookalike,10,301,best single dish,0,40,0
+lookalike,10,301,equal gain,0,40,0
+lookalike,10,301,SUMPLE (blind consensus),0,40,0
+lookalike,10,301,sync-marker only,40,40,0
+lookalike,10,301,Choir (verified frames),40,40,0
+lookalike,10,301,bound: knows the data,40,40,0
+lookalike,15,301,best single dish,0,40,0
+lookalike,15,301,equal gain,0,40,0
+lookalike,15,301,SUMPLE (blind consensus),0,40,0
+lookalike,15,301,sync-marker only,39,40,0
+lookalike,15,301,Choir (verified frames),40,40,0
+lookalike,15,301,bound: knows the data,40,40,0
+lookalike,20,301,best single dish,0,40,0
+lookalike,20,301,equal gain,0,40,0
+lookalike,20,301,SUMPLE (blind consensus),0,40,0
+lookalike,20,301,sync-marker only,1,40,0
+lookalike,20,301,Choir (verified frames),40,40,0
+lookalike,20,301,bound: knows the data,40,40,0
+wideband,-10,302,best single dish,0,40,0
+wideband,-10,302,equal gain,40,40,0
+wideband,-10,302,SUMPLE (blind consensus),40,40,0
+wideband,-10,302,sync-marker only,40,40,0
+wideband,-10,302,Choir (verified frames),40,40,0
+wideband,-10,302,bound: knows the data,40,40,0
+wideband,-5,302,best single dish,0,40,0
+wideband,-5,302,equal gain,40,40,0
+wideband,-5,302,SUMPLE (blind consensus),40,40,0
+wideband,-5,302,sync-marker only,40,40,0
+wideband,-5,302,Choir (verified frames),40,40,0
+wideband,-5,302,bound: knows the data,40,40,0
+wideband,0,302,best single dish,0,40,0
+wideband,0,302,equal gain,40,40,0
+wideband,0,302,SUMPLE (blind consensus),40,40,0
+wideband,0,302,sync-marker only,40,40,0
+wideband,0,302,Choir (verified frames),40,40,0
+wideband,0,302,bound: knows the data,40,40,0
+wideband,5,302,best single dish,0,40,0
+wideband,5,302,equal gain,38,40,0
+wideband,5,302,SUMPLE (blind consensus),10,40,0
+wideband,5,302,sync-marker only,40,40,0
+wideband,5,302,Choir (verified frames),40,40,0
+wideband,5,302,bound: knows the data,40,40,0
+wideband,10,302,best single dish,0,40,0
+wideband,10,302,equal gain,3,40,0
+wideband,10,302,SUMPLE (blind consensus),0,40,0
+wideband,10,302,sync-marker only,40,40,0
+wideband,10,302,Choir (verified frames),40,40,0
+wideband,10,302,bound: knows the data,40,40,0
+wideband,15,302,best single dish,0,40,0
+wideband,15,302,equal gain,0,40,0
+wideband,15,302,SUMPLE (blind consensus),0,40,0
+wideband,15,302,sync-marker only,40,40,0
+wideband,15,302,Choir (verified frames),40,40,0
+wideband,15,302,bound: knows the data,40,40,0
+wideband,20,302,best single dish,0,40,0
+wideband,20,302,equal gain,0,40,0
+wideband,20,302,SUMPLE (blind consensus),0,40,0
+wideband,20,302,sync-marker only,40,40,0
+wideband,20,302,Choir (verified frames),40,40,0
+wideband,20,302,bound: knows the data,40,40,0
+lookalike,-10,302,best single dish,0,40,0
+lookalike,-10,302,equal gain,40,40,0
+lookalike,-10,302,SUMPLE (blind consensus),39,40,0
+lookalike,-10,302,sync-marker only,40,40,0
+lookalike,-10,302,Choir (verified frames),40,40,0
+lookalike,-10,302,bound: knows the data,40,40,0
+lookalike,-5,302,best single dish,0,40,0
+lookalike,-5,302,equal gain,39,40,0
+lookalike,-5,302,SUMPLE (blind consensus),38,40,0
+lookalike,-5,302,sync-marker only,40,40,0
+lookalike,-5,302,Choir (verified frames),40,40,0
+lookalike,-5,302,bound: knows the data,40,40,0
+lookalike,0,302,best single dish,0,40,0
+lookalike,0,302,equal gain,39,40,0
+lookalike,0,302,SUMPLE (blind consensus),9,40,0
+lookalike,0,302,sync-marker only,40,40,0
+lookalike,0,302,Choir (verified frames),40,40,0
+lookalike,0,302,bound: knows the data,40,40,0
+lookalike,5,302,best single dish,0,40,0
+lookalike,5,302,equal gain,9,40,0
+lookalike,5,302,SUMPLE (blind consensus),2,40,0
+lookalike,5,302,sync-marker only,40,40,0
+lookalike,5,302,Choir (verified frames),39,40,0
+lookalike,5,302,bound: knows the data,40,40,0
+lookalike,10,302,best single dish,0,40,0
+lookalike,10,302,equal gain,0,40,0
+lookalike,10,302,SUMPLE (blind consensus),0,40,0
+lookalike,10,302,sync-marker only,39,40,0
+lookalike,10,302,Choir (verified frames),40,40,0
+lookalike,10,302,bound: knows the data,40,40,0
+lookalike,15,302,best single dish,0,40,0
+lookalike,15,302,equal gain,0,40,0
+lookalike,15,302,SUMPLE (blind consensus),0,40,0
+lookalike,15,302,sync-marker only,4,40,0
+lookalike,15,302,Choir (verified frames),40,40,0
+lookalike,15,302,bound: knows the data,40,40,0
+lookalike,20,302,best single dish,0,40,0
+lookalike,20,302,equal gain,0,40,0
+lookalike,20,302,SUMPLE (blind consensus),0,40,0
+lookalike,20,302,sync-marker only,1,40,0
+lookalike,20,302,Choir (verified frames),39,40,0
+lookalike,20,302,bound: knows the data,40,40,0
+wideband,-10,303,best single dish,0,40,0
+wideband,-10,303,equal gain,40,40,0
+wideband,-10,303,SUMPLE (blind consensus),40,40,0
+wideband,-10,303,sync-marker only,40,40,0
+wideband,-10,303,Choir (verified frames),40,40,0
+wideband,-10,303,bound: knows the data,40,40,0
+wideband,-5,303,best single dish,0,40,0
+wideband,-5,303,equal gain,40,40,0
+wideband,-5,303,SUMPLE (blind consensus),40,40,0
+wideband,-5,303,sync-marker only,40,40,0
+wideband,-5,303,Choir (verified frames),40,40,0
+wideband,-5,303,bound: knows the data,40,40,0
+wideband,0,303,best single dish,0,40,0
+wideband,0,303,equal gain,40,40,0
+wideband,0,303,SUMPLE (blind consensus),40,40,0
+wideband,0,303,sync-marker only,39,40,0
+wideband,0,303,Choir (verified frames),40,40,0
+wideband,0,303,bound: knows the data,40,40,0
+wideband,5,303,best single dish,0,40,0
+wideband,5,303,equal gain,39,40,0
+wideband,5,303,SUMPLE (blind consensus),9,40,0
+wideband,5,303,sync-marker only,40,40,0
+wideband,5,303,Choir (verified frames),40,40,0
+wideband,5,303,bound: knows the data,40,40,0
+wideband,10,303,best single dish,0,40,0
+wideband,10,303,equal gain,2,40,0
+wideband,10,303,SUMPLE (blind consensus),0,40,0
+wideband,10,303,sync-marker only,40,40,0
+wideband,10,303,Choir (verified frames),40,40,0
+wideband,10,303,bound: knows the data,40,40,0
+wideband,15,303,best single dish,0,40,0
+wideband,15,303,equal gain,0,40,0
+wideband,15,303,SUMPLE (blind consensus),0,40,0
+wideband,15,303,sync-marker only,40,40,0
+wideband,15,303,Choir (verified frames),40,40,0
+wideband,15,303,bound: knows the data,40,40,0
+wideband,20,303,best single dish,0,40,0
+wideband,20,303,equal gain,0,40,0
+wideband,20,303,SUMPLE (blind consensus),0,40,0
+wideband,20,303,sync-marker only,35,40,0
+wideband,20,303,Choir (verified frames),40,40,0
+wideband,20,303,bound: knows the data,40,40,0
+lookalike,-10,303,best single dish,0,40,0
+lookalike,-10,303,equal gain,40,40,0
+lookalike,-10,303,SUMPLE (blind consensus),40,40,0
+lookalike,-10,303,sync-marker only,40,40,0
+lookalike,-10,303,Choir (verified frames),40,40,0
+lookalike,-10,303,bound: knows the data,40,40,0
+lookalike,-5,303,best single dish,0,40,0
+lookalike,-5,303,equal gain,40,40,0
+lookalike,-5,303,SUMPLE (blind consensus),40,40,0
+lookalike,-5,303,sync-marker only,40,40,0
+lookalike,-5,303,Choir (verified frames),40,40,0
+lookalike,-5,303,bound: knows the data,40,40,0
+lookalike,0,303,best single dish,0,40,0
+lookalike,0,303,equal gain,40,40,0
+lookalike,0,303,SUMPLE (blind consensus),0,40,0
+lookalike,0,303,sync-marker only,40,40,0
+lookalike,0,303,Choir (verified frames),40,40,0
+lookalike,0,303,bound: knows the data,40,40,0
+lookalike,5,303,best single dish,0,40,0
+lookalike,5,303,equal gain,33,40,0
+lookalike,5,303,SUMPLE (blind consensus),0,40,0
+lookalike,5,303,sync-marker only,40,40,0
+lookalike,5,303,Choir (verified frames),40,40,0
+lookalike,5,303,bound: knows the data,40,40,0
+lookalike,10,303,best single dish,0,40,0
+lookalike,10,303,equal gain,0,40,0
+lookalike,10,303,SUMPLE (blind consensus),0,40,0
+lookalike,10,303,sync-marker only,40,40,0
+lookalike,10,303,Choir (verified frames),40,40,0
+lookalike,10,303,bound: knows the data,40,40,0
+lookalike,15,303,best single dish,0,40,0
+lookalike,15,303,equal gain,0,40,0
+lookalike,15,303,SUMPLE (blind consensus),0,40,0
+lookalike,15,303,sync-marker only,37,40,0
+lookalike,15,303,Choir (verified frames),40,40,0
+lookalike,15,303,bound: knows the data,40,40,0
+lookalike,20,303,best single dish,0,40,0
+lookalike,20,303,equal gain,0,40,0
+lookalike,20,303,SUMPLE (blind consensus),0,40,0
+lookalike,20,303,sync-marker only,10,40,0
+lookalike,20,303,Choir (verified frames),40,40,0
+lookalike,20,303,bound: knows the data,40,40,0
+wideband,-10,304,best single dish,0,40,0
+wideband,-10,304,equal gain,40,40,0
+wideband,-10,304,SUMPLE (blind consensus),40,40,0
+wideband,-10,304,sync-marker only,40,40,0
+wideband,-10,304,Choir (verified frames),39,40,0
+wideband,-10,304,bound: knows the data,40,40,0
+wideband,-5,304,best single dish,0,40,0
+wideband,-5,304,equal gain,39,40,0
+wideband,-5,304,SUMPLE (blind consensus),39,40,0
+wideband,-5,304,sync-marker only,40,40,0
+wideband,-5,304,Choir (verified frames),39,40,0
+wideband,-5,304,bound: knows the data,40,40,0
+wideband,0,304,best single dish,0,40,0
+wideband,0,304,equal gain,39,40,0
+wideband,0,304,SUMPLE (blind consensus),39,40,0
+wideband,0,304,sync-marker only,40,40,0
+wideband,0,304,Choir (verified frames),39,40,0
+wideband,0,304,bound: knows the data,40,40,0
+wideband,5,304,best single dish,0,40,0
+wideband,5,304,equal gain,26,40,0
+wideband,5,304,SUMPLE (blind consensus),5,40,0
+wideband,5,304,sync-marker only,40,40,0
+wideband,5,304,Choir (verified frames),40,40,0
+wideband,5,304,bound: knows the data,40,40,0
+wideband,10,304,best single dish,0,40,0
+wideband,10,304,equal gain,0,40,0
+wideband,10,304,SUMPLE (blind consensus),0,40,0
+wideband,10,304,sync-marker only,40,40,0
+wideband,10,304,Choir (verified frames),40,40,0
+wideband,10,304,bound: knows the data,40,40,0
+wideband,15,304,best single dish,0,40,0
+wideband,15,304,equal gain,0,40,0
+wideband,15,304,SUMPLE (blind consensus),0,40,0
+wideband,15,304,sync-marker only,40,40,0
+wideband,15,304,Choir (verified frames),40,40,0
+wideband,15,304,bound: knows the data,40,40,0
+wideband,20,304,best single dish,0,40,0
+wideband,20,304,equal gain,0,40,0
+wideband,20,304,SUMPLE (blind consensus),0,40,0
+wideband,20,304,sync-marker only,9,40,0
+wideband,20,304,Choir (verified frames),40,40,0
+wideband,20,304,bound: knows the data,40,40,0
+lookalike,-10,304,best single dish,0,40,0
+lookalike,-10,304,equal gain,40,40,0
+lookalike,-10,304,SUMPLE (blind consensus),40,40,0
+lookalike,-10,304,sync-marker only,37,40,0
+lookalike,-10,304,Choir (verified frames),39,40,0
+lookalike,-10,304,bound: knows the data,40,40,0
+lookalike,-5,304,best single dish,0,40,0
+lookalike,-5,304,equal gain,28,40,0
+lookalike,-5,304,SUMPLE (blind consensus),18,40,0
+lookalike,-5,304,sync-marker only,22,40,0
+lookalike,-5,304,Choir (verified frames),25,40,0
+lookalike,-5,304,bound: knows the data,35,40,0
+lookalike,0,304,best single dish,0,40,0
+lookalike,0,304,equal gain,0,40,0
+lookalike,0,304,SUMPLE (blind consensus),0,40,0
+lookalike,0,304,sync-marker only,0,40,0
+lookalike,0,304,Choir (verified frames),0,40,0
+lookalike,0,304,bound: knows the data,4,40,0
+lookalike,5,304,best single dish,0,40,0
+lookalike,5,304,equal gain,0,40,0
+lookalike,5,304,SUMPLE (blind consensus),0,40,0
+lookalike,5,304,sync-marker only,0,40,0
+lookalike,5,304,Choir (verified frames),0,40,0
+lookalike,5,304,bound: knows the data,4,40,0
+lookalike,10,304,best single dish,0,40,0
+lookalike,10,304,equal gain,0,40,0
+lookalike,10,304,SUMPLE (blind consensus),0,40,0
+lookalike,10,304,sync-marker only,0,40,0
+lookalike,10,304,Choir (verified frames),0,40,0
+lookalike,10,304,bound: knows the data,3,40,0
+lookalike,15,304,best single dish,0,40,0
+lookalike,15,304,equal gain,0,40,0
+lookalike,15,304,SUMPLE (blind consensus),0,40,0
+lookalike,15,304,sync-marker only,0,40,0
+lookalike,15,304,Choir (verified frames),0,40,0
+lookalike,15,304,bound: knows the data,1,40,0
+lookalike,20,304,best single dish,0,40,0
+lookalike,20,304,equal gain,0,40,0
+lookalike,20,304,SUMPLE (blind consensus),0,40,0
+lookalike,20,304,sync-marker only,0,40,0
+lookalike,20,304,Choir (verified frames),0,40,0
+lookalike,20,304,bound: knows the data,1,40,0
+wideband,-10,305,best single dish,0,40,0
+wideband,-10,305,equal gain,40,40,0
+wideband,-10,305,SUMPLE (blind consensus),40,40,0
+wideband,-10,305,sync-marker only,40,40,0
+wideband,-10,305,Choir (verified frames),40,40,0
+wideband,-10,305,bound: knows the data,40,40,0
+wideband,-5,305,best single dish,0,40,0
+wideband,-5,305,equal gain,40,40,0
+wideband,-5,305,SUMPLE (blind consensus),40,40,0
+wideband,-5,305,sync-marker only,40,40,0
+wideband,-5,305,Choir (verified frames),40,40,0
+wideband,-5,305,bound: knows the data,40,40,0
+wideband,0,305,best single dish,0,40,0
+wideband,0,305,equal gain,32,40,0
+wideband,0,305,SUMPLE (blind consensus),22,40,0
+wideband,0,305,sync-marker only,38,40,0
+wideband,0,305,Choir (verified frames),40,40,0
+wideband,0,305,bound: knows the data,40,40,0
+wideband,5,305,best single dish,0,40,0
+wideband,5,305,equal gain,0,40,0
+wideband,5,305,SUMPLE (blind consensus),0,40,0
+wideband,5,305,sync-marker only,38,40,0
+wideband,5,305,Choir (verified frames),39,40,0
+wideband,5,305,bound: knows the data,39,40,0
+wideband,10,305,best single dish,0,40,0
+wideband,10,305,equal gain,0,40,0
+wideband,10,305,SUMPLE (blind consensus),0,40,0
+wideband,10,305,sync-marker only,38,40,0
+wideband,10,305,Choir (verified frames),39,40,0
+wideband,10,305,bound: knows the data,39,40,0
+wideband,15,305,best single dish,0,40,0
+wideband,15,305,equal gain,0,40,0
+wideband,15,305,SUMPLE (blind consensus),0,40,0
+wideband,15,305,sync-marker only,37,40,0
+wideband,15,305,Choir (verified frames),39,40,0
+wideband,15,305,bound: knows the data,39,40,0
+wideband,20,305,best single dish,0,40,0
+wideband,20,305,equal gain,0,40,0
+wideband,20,305,SUMPLE (blind consensus),0,40,0
+wideband,20,305,sync-marker only,30,40,0
+wideband,20,305,Choir (verified frames),38,40,0
+wideband,20,305,bound: knows the data,39,40,0
+lookalike,-10,305,best single dish,0,40,0
+lookalike,-10,305,equal gain,40,40,0
+lookalike,-10,305,SUMPLE (blind consensus),39,40,0
+lookalike,-10,305,sync-marker only,38,40,0
+lookalike,-10,305,Choir (verified frames),40,40,0
+lookalike,-10,305,bound: knows the data,40,40,0
+lookalike,-5,305,best single dish,0,40,0
+lookalike,-5,305,equal gain,34,40,0
+lookalike,-5,305,SUMPLE (blind consensus),19,40,0
+lookalike,-5,305,sync-marker only,38,40,0
+lookalike,-5,305,Choir (verified frames),39,40,0
+lookalike,-5,305,bound: knows the data,40,40,0
+lookalike,0,305,best single dish,0,40,0
+lookalike,0,305,equal gain,0,40,0
+lookalike,0,305,SUMPLE (blind consensus),0,40,0
+lookalike,0,305,sync-marker only,38,40,0
+lookalike,0,305,Choir (verified frames),37,40,0
+lookalike,0,305,bound: knows the data,40,40,0
+lookalike,5,305,best single dish,0,40,0
+lookalike,5,305,equal gain,0,40,0
+lookalike,5,305,SUMPLE (blind consensus),0,40,0
+lookalike,5,305,sync-marker only,38,40,0
+lookalike,5,305,Choir (verified frames),37,40,0
+lookalike,5,305,bound: knows the data,40,40,0
+lookalike,10,305,best single dish,0,40,0
+lookalike,10,305,equal gain,0,40,0
+lookalike,10,305,SUMPLE (blind consensus),0,40,0
+lookalike,10,305,sync-marker only,38,40,0
+lookalike,10,305,Choir (verified frames),38,40,0
+lookalike,10,305,bound: knows the data,40,40,0
+lookalike,15,305,best single dish,0,40,0
+lookalike,15,305,equal gain,0,40,0
+lookalike,15,305,SUMPLE (blind consensus),0,40,0
+lookalike,15,305,sync-marker only,11,40,0
+lookalike,15,305,Choir (verified frames),37,40,0
+lookalike,15,305,bound: knows the data,40,40,0
+lookalike,20,305,best single dish,0,40,0
+lookalike,20,305,equal gain,0,40,0
+lookalike,20,305,SUMPLE (blind consensus),0,40,0
+lookalike,20,305,sync-marker only,1,40,0
+lookalike,20,305,Choir (verified frames),34,40,0
+lookalike,20,305,bound: knows the data,40,40,0
+wideband,-10,306,best single dish,0,40,0
+wideband,-10,306,equal gain,40,40,0
+wideband,-10,306,SUMPLE (blind consensus),40,40,0
+wideband,-10,306,sync-marker only,40,40,0
+wideband,-10,306,Choir (verified frames),40,40,0
+wideband,-10,306,bound: knows the data,40,40,0
+wideband,-5,306,best single dish,0,40,0
+wideband,-5,306,equal gain,40,40,0
+wideband,-5,306,SUMPLE (blind consensus),40,40,0
+wideband,-5,306,sync-marker only,40,40,0
+wideband,-5,306,Choir (verified frames),40,40,0
+wideband,-5,306,bound: knows the data,40,40,0
+wideband,0,306,best single dish,0,40,0
+wideband,0,306,equal gain,40,40,0
+wideband,0,306,SUMPLE (blind consensus),39,40,0
+wideband,0,306,sync-marker only,40,40,0
+wideband,0,306,Choir (verified frames),40,40,0
+wideband,0,306,bound: knows the data,40,40,0
+wideband,5,306,best single dish,0,40,0
+wideband,5,306,equal gain,37,40,0
+wideband,5,306,SUMPLE (blind consensus),9,40,0
+wideband,5,306,sync-marker only,40,40,0
+wideband,5,306,Choir (verified frames),40,40,0
+wideband,5,306,bound: knows the data,40,40,0
+wideband,10,306,best single dish,0,40,0
+wideband,10,306,equal gain,9,40,0
+wideband,10,306,SUMPLE (blind consensus),0,40,0
+wideband,10,306,sync-marker only,40,40,0
+wideband,10,306,Choir (verified frames),40,40,0
+wideband,10,306,bound: knows the data,40,40,0
+wideband,15,306,best single dish,0,40,0
+wideband,15,306,equal gain,0,40,0
+wideband,15,306,SUMPLE (blind consensus),0,40,0
+wideband,15,306,sync-marker only,39,40,0
+wideband,15,306,Choir (verified frames),40,40,0
+wideband,15,306,bound: knows the data,40,40,0
+wideband,20,306,best single dish,0,40,0
+wideband,20,306,equal gain,0,40,0
+wideband,20,306,SUMPLE (blind consensus),0,40,0
+wideband,20,306,sync-marker only,32,40,0
+wideband,20,306,Choir (verified frames),39,40,0
+wideband,20,306,bound: knows the data,40,40,0
+lookalike,-10,306,best single dish,0,40,0
+lookalike,-10,306,equal gain,40,40,0
+lookalike,-10,306,SUMPLE (blind consensus),40,40,0
+lookalike,-10,306,sync-marker only,40,40,0
+lookalike,-10,306,Choir (verified frames),40,40,0
+lookalike,-10,306,bound: knows the data,40,40,0
+lookalike,-5,306,best single dish,0,40,0
+lookalike,-5,306,equal gain,40,40,0
+lookalike,-5,306,SUMPLE (blind consensus),38,40,0
+lookalike,-5,306,sync-marker only,39,40,0
+lookalike,-5,306,Choir (verified frames),40,40,0
+lookalike,-5,306,bound: knows the data,40,40,0
+lookalike,0,306,best single dish,0,40,0
+lookalike,0,306,equal gain,32,40,0
+lookalike,0,306,SUMPLE (blind consensus),8,40,0
+lookalike,0,306,sync-marker only,39,40,0
+lookalike,0,306,Choir (verified frames),40,40,0
+lookalike,0,306,bound: knows the data,40,40,0
+lookalike,5,306,best single dish,0,40,0
+lookalike,5,306,equal gain,0,40,0
+lookalike,5,306,SUMPLE (blind consensus),0,40,0
+lookalike,5,306,sync-marker only,39,40,0
+lookalike,5,306,Choir (verified frames),39,40,0
+lookalike,5,306,bound: knows the data,39,40,0
+lookalike,10,306,best single dish,0,40,0
+lookalike,10,306,equal gain,0,40,0
+lookalike,10,306,SUMPLE (blind consensus),0,40,0
+lookalike,10,306,sync-marker only,38,40,0
+lookalike,10,306,Choir (verified frames),40,40,0
+lookalike,10,306,bound: knows the data,39,40,0
+lookalike,15,306,best single dish,0,40,0
+lookalike,15,306,equal gain,0,40,0
+lookalike,15,306,SUMPLE (blind consensus),0,40,0
+lookalike,15,306,sync-marker only,35,40,0
+lookalike,15,306,Choir (verified frames),39,40,0
+lookalike,15,306,bound: knows the data,39,40,0
+lookalike,20,306,best single dish,0,40,0
+lookalike,20,306,equal gain,0,40,0
+lookalike,20,306,SUMPLE (blind consensus),0,40,0
+lookalike,20,306,sync-marker only,3,40,0
+lookalike,20,306,Choir (verified frames),39,40,0
+lookalike,20,306,bound: knows the data,39,40,0
+wideband,-10,307,best single dish,0,40,0
+wideband,-10,307,equal gain,40,40,0
+wideband,-10,307,SUMPLE (blind consensus),40,40,0
+wideband,-10,307,sync-marker only,40,40,0
+wideband,-10,307,Choir (verified frames),40,40,0
+wideband,-10,307,bound: knows the data,40,40,0
+wideband,-5,307,best single dish,0,40,0
+wideband,-5,307,equal gain,40,40,0
+wideband,-5,307,SUMPLE (blind consensus),40,40,0
+wideband,-5,307,sync-marker only,39,40,0
+wideband,-5,307,Choir (verified frames),40,40,0
+wideband,-5,307,bound: knows the data,40,40,0
+wideband,0,307,best single dish,0,40,0
+wideband,0,307,equal gain,38,40,0
+wideband,0,307,SUMPLE (blind consensus),27,40,0
+wideband,0,307,sync-marker only,39,40,0
+wideband,0,307,Choir (verified frames),40,40,0
+wideband,0,307,bound: knows the data,40,40,0
+wideband,5,307,best single dish,0,40,0
+wideband,5,307,equal gain,2,40,0
+wideband,5,307,SUMPLE (blind consensus),0,40,0
+wideband,5,307,sync-marker only,38,40,0
+wideband,5,307,Choir (verified frames),40,40,0
+wideband,5,307,bound: knows the data,40,40,0
+wideband,10,307,best single dish,0,40,0
+wideband,10,307,equal gain,0,40,0
+wideband,10,307,SUMPLE (blind consensus),0,40,0
+wideband,10,307,sync-marker only,38,40,0
+wideband,10,307,Choir (verified frames),40,40,0
+wideband,10,307,bound: knows the data,40,40,0
+wideband,15,307,best single dish,0,40,0
+wideband,15,307,equal gain,0,40,0
+wideband,15,307,SUMPLE (blind consensus),0,40,0
+wideband,15,307,sync-marker only,37,40,0
+wideband,15,307,Choir (verified frames),39,40,0
+wideband,15,307,bound: knows the data,40,40,0
+wideband,20,307,best single dish,0,40,0
+wideband,20,307,equal gain,0,40,0
+wideband,20,307,SUMPLE (blind consensus),0,40,0
+wideband,20,307,sync-marker only,1,40,0
+wideband,20,307,Choir (verified frames),40,40,0
+wideband,20,307,bound: knows the data,40,40,0
+lookalike,-10,307,best single dish,0,40,0
+lookalike,-10,307,equal gain,40,40,0
+lookalike,-10,307,SUMPLE (blind consensus),40,40,0
+lookalike,-10,307,sync-marker only,40,40,0
+lookalike,-10,307,Choir (verified frames),40,40,0
+lookalike,-10,307,bound: knows the data,40,40,0
+lookalike,-5,307,best single dish,0,40,0
+lookalike,-5,307,equal gain,40,40,0
+lookalike,-5,307,SUMPLE (blind consensus),37,40,0
+lookalike,-5,307,sync-marker only,39,40,0
+lookalike,-5,307,Choir (verified frames),40,40,0
+lookalike,-5,307,bound: knows the data,40,40,0
+lookalike,0,307,best single dish,0,40,0
+lookalike,0,307,equal gain,28,40,0
+lookalike,0,307,SUMPLE (blind consensus),8,40,0
+lookalike,0,307,sync-marker only,39,40,0
+lookalike,0,307,Choir (verified frames),40,40,0
+lookalike,0,307,bound: knows the data,39,40,0
+lookalike,5,307,best single dish,0,40,0
+lookalike,5,307,equal gain,0,40,0
+lookalike,5,307,SUMPLE (blind consensus),0,40,0
+lookalike,5,307,sync-marker only,37,40,0
+lookalike,5,307,Choir (verified frames),39,40,0
+lookalike,5,307,bound: knows the data,39,40,0
+lookalike,10,307,best single dish,0,40,0
+lookalike,10,307,equal gain,0,40,0
+lookalike,10,307,SUMPLE (blind consensus),0,40,0
+lookalike,10,307,sync-marker only,36,40,0
+lookalike,10,307,Choir (verified frames),38,40,0
+lookalike,10,307,bound: knows the data,39,40,0
+lookalike,15,307,best single dish,0,40,0
+lookalike,15,307,equal gain,0,40,0
+lookalike,15,307,SUMPLE (blind consensus),0,40,0
+lookalike,15,307,sync-marker only,2,40,0
+lookalike,15,307,Choir (verified frames),37,40,0
+lookalike,15,307,bound: knows the data,39,40,0
+lookalike,20,307,best single dish,0,40,0
+lookalike,20,307,equal gain,0,40,0
+lookalike,20,307,SUMPLE (blind consensus),0,40,0
+lookalike,20,307,sync-marker only,2,40,0
+lookalike,20,307,Choir (verified frames),39,40,0
+lookalike,20,307,bound: knows the data,39,40,0
+wideband,-10,308,best single dish,0,40,0
+wideband,-10,308,equal gain,40,40,0
+wideband,-10,308,SUMPLE (blind consensus),40,40,0
+wideband,-10,308,sync-marker only,40,40,0
+wideband,-10,308,Choir (verified frames),40,40,0
+wideband,-10,308,bound: knows the data,40,40,0
+wideband,-5,308,best single dish,0,40,0
+wideband,-5,308,equal gain,40,40,0
+wideband,-5,308,SUMPLE (blind consensus),40,40,0
+wideband,-5,308,sync-marker only,40,40,0
+wideband,-5,308,Choir (verified frames),40,40,0
+wideband,-5,308,bound: knows the data,40,40,0
+wideband,0,308,best single dish,0,40,0
+wideband,0,308,equal gain,40,40,0
+wideband,0,308,SUMPLE (blind consensus),40,40,0
+wideband,0,308,sync-marker only,40,40,0
+wideband,0,308,Choir (verified frames),40,40,0
+wideband,0,308,bound: knows the data,40,40,0
+wideband,5,308,best single dish,0,40,0
+wideband,5,308,equal gain,39,40,0
+wideband,5,308,SUMPLE (blind consensus),4,40,0
+wideband,5,308,sync-marker only,40,40,0
+wideband,5,308,Choir (verified frames),40,40,0
+wideband,5,308,bound: knows the data,40,40,0
+wideband,10,308,best single dish,0,40,0
+wideband,10,308,equal gain,11,40,0
+wideband,10,308,SUMPLE (blind consensus),0,40,0
+wideband,10,308,sync-marker only,39,40,0
+wideband,10,308,Choir (verified frames),40,40,0
+wideband,10,308,bound: knows the data,40,40,0
+wideband,15,308,best single dish,0,40,0
+wideband,15,308,equal gain,0,40,0
+wideband,15,308,SUMPLE (blind consensus),0,40,0
+wideband,15,308,sync-marker only,39,40,0
+wideband,15,308,Choir (verified frames),39,40,0
+wideband,15,308,bound: knows the data,40,40,0
+wideband,20,308,best single dish,0,40,0
+wideband,20,308,equal gain,0,40,0
+wideband,20,308,SUMPLE (blind consensus),0,40,0
+wideband,20,308,sync-marker only,34,40,0
+wideband,20,308,Choir (verified frames),39,40,0
+wideband,20,308,bound: knows the data,40,40,0
+lookalike,-10,308,best single dish,0,40,0
+lookalike,-10,308,equal gain,40,40,0
+lookalike,-10,308,SUMPLE (blind consensus),40,40,0
+lookalike,-10,308,sync-marker only,38,40,0
+lookalike,-10,308,Choir (verified frames),40,40,0
+lookalike,-10,308,bound: knows the data,40,40,0
+lookalike,-5,308,best single dish,0,40,0
+lookalike,-5,308,equal gain,40,40,0
+lookalike,-5,308,SUMPLE (blind consensus),38,40,0
+lookalike,-5,308,sync-marker only,39,40,0
+lookalike,-5,308,Choir (verified frames),39,40,0
+lookalike,-5,308,bound: knows the data,40,40,0
+lookalike,0,308,best single dish,0,40,0
+lookalike,0,308,equal gain,28,40,0
+lookalike,0,308,SUMPLE (blind consensus),1,40,0
+lookalike,0,308,sync-marker only,39,40,0
+lookalike,0,308,Choir (verified frames),40,40,0
+lookalike,0,308,bound: knows the data,40,40,0
+lookalike,5,308,best single dish,0,40,0
+lookalike,5,308,equal gain,0,40,0
+lookalike,5,308,SUMPLE (blind consensus),0,40,0
+lookalike,5,308,sync-marker only,38,40,0
+lookalike,5,308,Choir (verified frames),40,40,0
+lookalike,5,308,bound: knows the data,40,40,0
+lookalike,10,308,best single dish,0,40,0
+lookalike,10,308,equal gain,0,40,0
+lookalike,10,308,SUMPLE (blind consensus),0,40,0
+lookalike,10,308,sync-marker only,34,40,0
+lookalike,10,308,Choir (verified frames),39,40,0
+lookalike,10,308,bound: knows the data,40,40,0
+lookalike,15,308,best single dish,0,40,0
+lookalike,15,308,equal gain,0,40,0
+lookalike,15,308,SUMPLE (blind consensus),0,40,0
+lookalike,15,308,sync-marker only,6,40,0
+lookalike,15,308,Choir (verified frames),40,40,0
+lookalike,15,308,bound: knows the data,40,40,0
+lookalike,20,308,best single dish,0,40,0
+lookalike,20,308,equal gain,0,40,0
+lookalike,20,308,SUMPLE (blind consensus),0,40,0
+lookalike,20,308,sync-marker only,6,40,0
+lookalike,20,308,Choir (verified frames),40,40,0
+lookalike,20,308,bound: knows the data,40,40,0
+wideband,-10,309,best single dish,0,40,0
+wideband,-10,309,equal gain,40,40,0
+wideband,-10,309,SUMPLE (blind consensus),40,40,0
+wideband,-10,309,sync-marker only,40,40,0
+wideband,-10,309,Choir (verified frames),40,40,0
+wideband,-10,309,bound: knows the data,40,40,0
+wideband,-5,309,best single dish,0,40,0
+wideband,-5,309,equal gain,40,40,0
+wideband,-5,309,SUMPLE (blind consensus),40,40,0
+wideband,-5,309,sync-marker only,40,40,0
+wideband,-5,309,Choir (verified frames),40,40,0
+wideband,-5,309,bound: knows the data,40,40,0
+wideband,0,309,best single dish,0,40,0
+wideband,0,309,equal gain,39,40,0
+wideband,0,309,SUMPLE (blind consensus),38,40,0
+wideband,0,309,sync-marker only,39,40,0
+wideband,0,309,Choir (verified frames),40,40,0
+wideband,0,309,bound: knows the data,40,40,0
+wideband,5,309,best single dish,0,40,0
+wideband,5,309,equal gain,23,40,0
+wideband,5,309,SUMPLE (blind consensus),1,40,0
+wideband,5,309,sync-marker only,40,40,0
+wideband,5,309,Choir (verified frames),40,40,0
+wideband,5,309,bound: knows the data,40,40,0
+wideband,10,309,best single dish,0,40,0
+wideband,10,309,equal gain,0,40,0
+wideband,10,309,SUMPLE (blind consensus),0,40,0
+wideband,10,309,sync-marker only,40,40,0
+wideband,10,309,Choir (verified frames),40,40,0
+wideband,10,309,bound: knows the data,40,40,0
+wideband,15,309,best single dish,0,40,0
+wideband,15,309,equal gain,0,40,0
+wideband,15,309,SUMPLE (blind consensus),0,40,0
+wideband,15,309,sync-marker only,40,40,0
+wideband,15,309,Choir (verified frames),38,40,0
+wideband,15,309,bound: knows the data,40,40,0
+wideband,20,309,best single dish,0,40,0
+wideband,20,309,equal gain,0,40,0
+wideband,20,309,SUMPLE (blind consensus),0,40,0
+wideband,20,309,sync-marker only,38,40,0
+wideband,20,309,Choir (verified frames),38,40,0
+wideband,20,309,bound: knows the data,40,40,0
+lookalike,-10,309,best single dish,0,40,0
+lookalike,-10,309,equal gain,40,40,0
+lookalike,-10,309,SUMPLE (blind consensus),40,40,0
+lookalike,-10,309,sync-marker only,40,40,0
+lookalike,-10,309,Choir (verified frames),40,40,0
+lookalike,-10,309,bound: knows the data,40,40,0
+lookalike,-5,309,best single dish,0,40,0
+lookalike,-5,309,equal gain,40,40,0
+lookalike,-5,309,SUMPLE (blind consensus),39,40,0
+lookalike,-5,309,sync-marker only,40,40,0
+lookalike,-5,309,Choir (verified frames),40,40,0
+lookalike,-5,309,bound: knows the data,40,40,0
+lookalike,0,309,best single dish,0,40,0
+lookalike,0,309,equal gain,26,40,0
+lookalike,0,309,SUMPLE (blind consensus),8,40,0
+lookalike,0,309,sync-marker only,40,40,0
+lookalike,0,309,Choir (verified frames),40,40,0
+lookalike,0,309,bound: knows the data,40,40,0
+lookalike,5,309,best single dish,0,40,0
+lookalike,5,309,equal gain,0,40,0
+lookalike,5,309,SUMPLE (blind consensus),0,40,0
+lookalike,5,309,sync-marker only,39,40,0
+lookalike,5,309,Choir (verified frames),40,40,0
+lookalike,5,309,bound: knows the data,40,40,0
+lookalike,10,309,best single dish,0,40,0
+lookalike,10,309,equal gain,0,40,0
+lookalike,10,309,SUMPLE (blind consensus),0,40,0
+lookalike,10,309,sync-marker only,37,40,0
+lookalike,10,309,Choir (verified frames),39,40,0
+lookalike,10,309,bound: knows the data,40,40,0
+lookalike,15,309,best single dish,0,40,0
+lookalike,15,309,equal gain,0,40,0
+lookalike,15,309,SUMPLE (blind consensus),0,40,0
+lookalike,15,309,sync-marker only,3,40,0
+lookalike,15,309,Choir (verified frames),38,40,0
+lookalike,15,309,bound: knows the data,40,40,0
+lookalike,20,309,best single dish,0,40,0
+lookalike,20,309,equal gain,0,40,0
+lookalike,20,309,SUMPLE (blind consensus),0,40,0
+lookalike,20,309,sync-marker only,2,40,0
+lookalike,20,309,Choir (verified frames),40,40,0
+lookalike,20,309,bound: knows the data,40,40,0
+wideband,-10,310,best single dish,0,40,0
+wideband,-10,310,equal gain,40,40,0
+wideband,-10,310,SUMPLE (blind consensus),40,40,0
+wideband,-10,310,sync-marker only,40,40,0
+wideband,-10,310,Choir (verified frames),40,40,0
+wideband,-10,310,bound: knows the data,40,40,0
+wideband,-5,310,best single dish,0,40,0
+wideband,-5,310,equal gain,40,40,0
+wideband,-5,310,SUMPLE (blind consensus),40,40,0
+wideband,-5,310,sync-marker only,40,40,0
+wideband,-5,310,Choir (verified frames),40,40,0
+wideband,-5,310,bound: knows the data,40,40,0
+wideband,0,310,best single dish,0,40,0
+wideband,0,310,equal gain,40,40,0
+wideband,0,310,SUMPLE (blind consensus),40,40,0
+wideband,0,310,sync-marker only,40,40,0
+wideband,0,310,Choir (verified frames),40,40,0
+wideband,0,310,bound: knows the data,40,40,0
+wideband,5,310,best single dish,0,40,0
+wideband,5,310,equal gain,40,40,0
+wideband,5,310,SUMPLE (blind consensus),37,40,0
+wideband,5,310,sync-marker only,40,40,0
+wideband,5,310,Choir (verified frames),40,40,0
+wideband,5,310,bound: knows the data,40,40,0
+wideband,10,310,best single dish,0,40,0
+wideband,10,310,equal gain,35,40,0
+wideband,10,310,SUMPLE (blind consensus),3,40,0
+wideband,10,310,sync-marker only,40,40,0
+wideband,10,310,Choir (verified frames),40,40,0
+wideband,10,310,bound: knows the data,40,40,0
+wideband,15,310,best single dish,0,40,0
+wideband,15,310,equal gain,4,40,0
+wideband,15,310,SUMPLE (blind consensus),0,40,0
+wideband,15,310,sync-marker only,39,40,0
+wideband,15,310,Choir (verified frames),40,40,0
+wideband,15,310,bound: knows the data,40,40,0
+wideband,20,310,best single dish,0,40,0
+wideband,20,310,equal gain,0,40,0
+wideband,20,310,SUMPLE (blind consensus),0,40,0
+wideband,20,310,sync-marker only,35,40,0
+wideband,20,310,Choir (verified frames),40,40,0
+wideband,20,310,bound: knows the data,40,40,0
+lookalike,-10,310,best single dish,0,40,0
+lookalike,-10,310,equal gain,40,40,0
+lookalike,-10,310,SUMPLE (blind consensus),40,40,0
+lookalike,-10,310,sync-marker only,40,40,0
+lookalike,-10,310,Choir (verified frames),40,40,0
+lookalike,-10,310,bound: knows the data,40,40,0
+lookalike,-5,310,best single dish,0,40,0
+lookalike,-5,310,equal gain,40,40,0
+lookalike,-5,310,SUMPLE (blind consensus),40,40,0
+lookalike,-5,310,sync-marker only,40,40,0
+lookalike,-5,310,Choir (verified frames),40,40,0
+lookalike,-5,310,bound: knows the data,40,40,0
+lookalike,0,310,best single dish,0,40,0
+lookalike,0,310,equal gain,39,40,0
+lookalike,0,310,SUMPLE (blind consensus),10,40,0
+lookalike,0,310,sync-marker only,40,40,0
+lookalike,0,310,Choir (verified frames),40,40,0
+lookalike,0,310,bound: knows the data,40,40,0
+lookalike,5,310,best single dish,0,40,0
+lookalike,5,310,equal gain,10,40,0
+lookalike,5,310,SUMPLE (blind consensus),1,40,0
+lookalike,5,310,sync-marker only,40,40,0
+lookalike,5,310,Choir (verified frames),40,40,0
+lookalike,5,310,bound: knows the data,40,40,0
+lookalike,10,310,best single dish,0,40,0
+lookalike,10,310,equal gain,0,40,0
+lookalike,10,310,SUMPLE (blind consensus),0,40,0
+lookalike,10,310,sync-marker only,38,40,0
+lookalike,10,310,Choir (verified frames),40,40,0
+lookalike,10,310,bound: knows the data,40,40,0
+lookalike,15,310,best single dish,0,40,0
+lookalike,15,310,equal gain,0,40,0
+lookalike,15,310,SUMPLE (blind consensus),0,40,0
+lookalike,15,310,sync-marker only,34,40,0
+lookalike,15,310,Choir (verified frames),39,40,0
+lookalike,15,310,bound: knows the data,40,40,0
+lookalike,20,310,best single dish,0,40,0
+lookalike,20,310,equal gain,0,40,0
+lookalike,20,310,SUMPLE (blind consensus),0,40,0
+lookalike,20,310,sync-marker only,3,40,0
+lookalike,20,310,Choir (verified frames),40,40,0
+lookalike,20,310,bound: knows the data,40,40,0

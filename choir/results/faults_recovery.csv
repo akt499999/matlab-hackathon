@@ -1,0 +1,5 @@
+receiver,dead_median_ms,dead_recovered_pct,glitch_median_ms,glitch_recovered_pct,lookalike_median_ms,lookalike_recovered_pct,hop_median_ms,hop_recovered_pct,fade_median_ms,fade_recovered_pct,noisy_median_ms,noisy_recovered_pct
+"Choir",0,100,0,100,0,100,284,100,0,100,0,100
+"SUMPLE + same supervisor",0,100,0,100,908,100,284,100,0,100,114,100
+"equal gain + same supervisor",0,100,0,100,908,100,284,100,0,100,411,100
+"Choir, supervisor off",0,45,0,40,0,55,NaN,0,0,40,0,50

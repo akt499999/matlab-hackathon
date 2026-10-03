@@ -1,0 +1,5 @@
+receiver,correct_pct_mean,correct_pct_worst_run,false_accepts_total,ms_per_frame_median
+"Choir",90.6333333333333,80.6666666666667,0,4.50914326484018
+"SUMPLE + same supervisor",77.7333333333333,70,0,6.01854166666667
+"equal gain + same supervisor",77.2833333333333,70.6666666666667,0,5.3033100031211
+"Choir, supervisor off",40.0333333333333,7.66666666666667,0,3.62837610785953

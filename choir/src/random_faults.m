@@ -1,0 +1,16 @@
+function faults = random_faults(seed, F, nDish)
+%RANDOM_FAULTS Six hidden faults at seeded random times and dishes (one of each kind).
+%   dead dish (comes back), clock glitch (permanent timing jump), look-alike spacecraft (+10 dB),
+%   carrier frequency hop (permanent), deep fade of every dish (-30 dB), one dish's noise x10.
+rs = RandStream('twister', 'Seed', 1000 + seed);
+starts = round(linspace(30, F - 45, 6)) + randi(rs, [-4 4], 1, 6);
+starts = starts(randperm(rs, 6));
+hop = (500 + 2500*rand(rs)) * sign(rand(rs) - 0.5);
+glitch = randi(rs, [4 12]) * sign(rand(rs) - 0.5);
+faults = [fault("dead",      starts(1), starts(1) + 40, randi(rs, nDish), 0), ...
+          fault("glitch",    starts(2), starts(2),      randi(rs, nDish), glitch), ...
+          fault("lookalike", starts(3), starts(3) + 30, [],               10), ...
+          fault("hop",       starts(4), starts(4),      [],               round(hop)), ...
+          fault("fade",      starts(5), starts(5) + 10, [],               0.03), ...
+          fault("noisy",     starts(6), starts(6) + 30, randi(rs, nDish), 10)];
+end

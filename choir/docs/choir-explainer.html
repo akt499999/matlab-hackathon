@@ -1,0 +1,941 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>Choir: how the project works</title>
+<style>
+  :root { --bg: #0b1020; --panel: #121a33; --line: #26335e; --text: #e2e8f0; --dim: #94a3b8; --cyan: #38bdf8; --yellow: #facc15; }
+  * { box-sizing: border-box; }
+  body { margin: 0; background: var(--bg); color: var(--text); font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, sans-serif; }
+  .wrap { max-width: 1100px; margin: 0 auto; padding: 16px 20px 28px; }
+  header { display: flex; align-items: baseline; justify-content: space-between; gap: 12px; flex-wrap: wrap; }
+  h1 { font-size: 18px; margin: 0; font-weight: 600; }
+  h1 span { color: var(--dim); font-weight: 400; }
+  .counter { color: var(--dim); font-size: 13px; }
+  h2 { font-size: 24px; margin: 14px 0 6px; }
+  .caption { font-size: 15.5px; line-height: 1.55; min-height: 100px; margin: 0 0 12px; }
+  .caption b { color: var(--yellow); font-weight: 600; }
+  .stage { background: var(--panel); border: 1px solid var(--line); border-radius: 12px; overflow: hidden; }
+  canvas { display: block; width: 100%; }
+  .controls { display: flex; gap: 10px; align-items: center; justify-content: space-between; margin-top: 12px; flex-wrap: wrap; }
+  .actions, .nav { display: flex; gap: 8px; flex-wrap: wrap; align-items: center; }
+  button { background: #1b2547; color: var(--text); border: 1px solid var(--line); border-radius: 8px; padding: 8px 12px; font-size: 14px; cursor: pointer; }
+  button:hover { border-color: var(--cyan); }
+  button.primary { background: #0e3a52; border-color: var(--cyan); }
+  button.on { background: #3b3410; border-color: var(--yellow); }
+  .dots { display: flex; gap: 6px; }
+  .dot { width: 11px; height: 11px; border-radius: 50%; background: #2a3768; padding: 0; border: none; }
+  .dot.active { background: var(--cyan); }
+  .hint { color: var(--dim); font-size: 12.5px; margin-top: 10px; }
+</style>
+</head>
+<body>
+<div class="wrap">
+  <header>
+    <h1>Choir <span>&middot; how the project works</span></h1>
+    <div class="counter" id="counter"></div>
+  </header>
+  <h2 id="title"></h2>
+  <p class="caption" id="caption"></p>
+  <div class="stage"><canvas id="cv"></canvas></div>
+  <div class="controls">
+    <div class="actions" id="actions"></div>
+    <div class="nav">
+      <button id="prev">&larr; prev</button>
+      <div class="dots" id="dots"></div>
+      <button id="next" class="primary">next &rarr;</button>
+    </div>
+  </div>
+  <div class="hint">Arrow keys move between scenes. Space pauses. Everything here is illustrative; the real numbers come from the MATLAB simulation.</div>
+</div>
+<script>
+'use strict';
+const W = 1000, H = 540;
+const C = {
+  bg: '#121a33', panel: '#0f1630', grid: '#22305a', line: '#26335e', text: '#e2e8f0', dim: '#94a3b8',
+  green: '#4ade80', cyan: '#38bdf8', red: '#f87171', yellow: '#facc15', purple: '#c084fc', gray: '#64748b', noise: '#7c8aa5'
+};
+const FONT = '-apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, sans-serif';
+const MONO = 'ui-monospace, SFMono-Regular, Menlo, Consolas, monospace';
+const cv = document.getElementById('cv');
+const ctx = cv.getContext('2d');
+
+function resize() {
+  const dpr = window.devicePixelRatio || 1;
+  const k = cv.parentElement.clientWidth / W;
+  cv.width = Math.round(W * k * dpr);
+  cv.height = Math.round(H * k * dpr);
+  cv.style.height = Math.round(H * k) + 'px';
+  ctx.setTransform(k * dpr, 0, 0, k * dpr, 0, 0);
+}
+window.addEventListener('resize', resize);
+
+/* ---------------- math helpers ---------------- */
+function mulberry32(a) {
+  return function () {
+    a |= 0; a = (a + 0x6D2B79F5) | 0;
+    let t = Math.imul(a ^ (a >>> 15), 1 | a);
+    t = (t + Math.imul(t ^ (t >>> 7), 61 | t)) ^ t;
+    return ((t ^ (t >>> 14)) >>> 0) / 4294967296;
+  };
+}
+function gaussian(rand) {
+  let u = 0;
+  while (u === 0) u = rand();
+  return Math.sqrt(-2 * Math.log(u)) * Math.cos(2 * Math.PI * rand());
+}
+function noiseArray(n, seed) {
+  const r = mulberry32(seed), a = new Float32Array(n);
+  for (let i = 0; i < n; i++) a[i] = gaussian(r);
+  return a;
+}
+const clamp = (v, lo, hi) => Math.max(lo, Math.min(hi, v));
+const ease = x => { x = clamp(x, 0, 1); return x * x * (3 - 2 * x); };
+const db = x => 10 * Math.log10(x);
+
+const cpx = (re, im = 0) => ({ re, im });
+const cadd = (a, b) => cpx(a.re + b.re, a.im + b.im);
+const csub = (a, b) => cpx(a.re - b.re, a.im - b.im);
+const cmul = (a, b) => cpx(a.re * b.re - a.im * b.im, a.re * b.im + a.im * b.re);
+const cconj = a => cpx(a.re, -a.im);
+const cscale = (a, k) => cpx(a.re * k, a.im * k);
+const cabs = a => Math.hypot(a.re, a.im);
+const carg = a => Math.atan2(a.im, a.re);
+const cexp = th => cpx(Math.cos(th), Math.sin(th));
+const cdiv = (a, b) => { const d = b.re * b.re + b.im * b.im; return cpx((a.re * b.re + a.im * b.im) / d, (a.im * b.re - a.re * b.im) / d); };
+const inner = (u, v) => u.reduce((acc, ui, i) => cadd(acc, cmul(cconj(ui), v[i])), cpx(0));
+
+/* ---------------- drawing helpers ---------------- */
+function setFont(size, weight, mono) { ctx.font = `${weight || 400} ${size}px ${mono ? MONO : FONT}`; }
+function text(s, x, y, o = {}) {
+  setFont(o.size || 14, o.weight, o.mono);
+  ctx.fillStyle = o.color || C.text;
+  ctx.textAlign = o.align || 'left';
+  ctx.textBaseline = 'alphabetic';
+  ctx.fillText(s, x, y);
+}
+function textWidth(s, size, weight, mono) { setFont(size, weight, mono); return ctx.measureText(s).width; }
+function rrect(x, y, w, h, r, fill, stroke, lw = 1, dash) {
+  r = Math.max(0, Math.min(r, w / 2, h / 2));
+  ctx.beginPath();
+  ctx.moveTo(x + r, y);
+  ctx.arcTo(x + w, y, x + w, y + h, r);
+  ctx.arcTo(x + w, y + h, x, y + h, r);
+  ctx.arcTo(x, y + h, x, y, r);
+  ctx.arcTo(x, y, x + w, y, r);
+  ctx.closePath();
+  if (fill) { ctx.fillStyle = fill; ctx.fill(); }
+  if (stroke) { ctx.strokeStyle = stroke; ctx.lineWidth = lw; ctx.setLineDash(dash || []); ctx.stroke(); ctx.setLineDash([]); }
+}
+function line(x1, y1, x2, y2, color, lw = 1, dash) {
+  ctx.beginPath(); ctx.moveTo(x1, y1); ctx.lineTo(x2, y2);
+  ctx.strokeStyle = color; ctx.lineWidth = lw; ctx.setLineDash(dash || []); ctx.stroke(); ctx.setLineDash([]);
+}
+function arrow(x1, y1, x2, y2, color, lw = 2, head = 9, dash) {
+  const len = Math.hypot(x2 - x1, y2 - y1);
+  if (len < 0.5) return;
+  const a = Math.atan2(y2 - y1, x2 - x1), hd = Math.min(head, len * 0.6);
+  line(x1, y1, x2 - Math.cos(a) * hd * 0.5, y2 - Math.sin(a) * hd * 0.5, color, lw, dash);
+  ctx.beginPath();
+  ctx.moveTo(x2, y2);
+  ctx.lineTo(x2 - hd * Math.cos(a - 0.45), y2 - hd * Math.sin(a - 0.45));
+  ctx.lineTo(x2 - hd * Math.cos(a + 0.45), y2 - hd * Math.sin(a + 0.45));
+  ctx.closePath(); ctx.fillStyle = color; ctx.fill();
+}
+function polyArrow(pts, color, lw = 1.6, dash) {
+  ctx.beginPath(); ctx.moveTo(pts[0][0], pts[0][1]);
+  for (let i = 1; i < pts.length - 1; i++) ctx.lineTo(pts[i][0], pts[i][1]);
+  ctx.strokeStyle = color; ctx.lineWidth = lw; ctx.setLineDash(dash || []); ctx.stroke(); ctx.setLineDash([]);
+  const [ax, ay] = pts[pts.length - 2], [bx, by] = pts[pts.length - 1];
+  arrow(ax, ay, bx, by, color, lw, 8, dash);
+}
+function pointAlong(pts, f) {
+  const segs = []; let total = 0;
+  for (let i = 0; i < pts.length - 1; i++) { const L = Math.hypot(pts[i + 1][0] - pts[i][0], pts[i + 1][1] - pts[i][1]); segs.push(L); total += L; }
+  let pos = clamp(f, 0, 1) * total;
+  for (let i = 0; i < segs.length; i++) {
+    if (pos <= segs[i] || i === segs.length - 1) {
+      const u = segs[i] ? Math.min(1, pos / segs[i]) : 0;
+      return [pts[i][0] + u * (pts[i + 1][0] - pts[i][0]), pts[i][1] + u * (pts[i + 1][1] - pts[i][1])];
+    }
+    pos -= segs[i];
+  }
+  return pts[pts.length - 1];
+}
+function flowDots(pts, t, color, speed = 0.3, n = 2) {
+  for (let d = 0; d < n; d++) {
+    const [x, y] = pointAlong(pts, (((t * speed + d / n) % 1) + 1) % 1);
+    ctx.beginPath(); ctx.arc(x, y, 3.2, 0, 2 * Math.PI); ctx.fillStyle = color; ctx.fill();
+  }
+}
+function plot(fn, n, x, y, w, h, color, lw = 1.5, scale = 1, dash) {
+  ctx.beginPath();
+  for (let i = 0; i < n; i++) {
+    const px = x + (i / (n - 1)) * w;
+    const py = y + h / 2 - (clamp(fn(i) / scale, -1.05, 1.05) * h) / 2;
+    if (i === 0) ctx.moveTo(px, py); else ctx.lineTo(px, py);
+  }
+  ctx.strokeStyle = color; ctx.lineWidth = lw; ctx.setLineDash(dash || []); ctx.stroke(); ctx.setLineDash([]);
+}
+function panel(x, y, w, h, label) {
+  rrect(x, y, w, h, 8, C.panel, C.line);
+  if (label) text(label, x + 12, y + 20, { size: 12, color: C.dim });
+}
+function dish(x, y, s, color = C.cyan, alpha = 1) {
+  ctx.save();
+  ctx.globalAlpha = alpha;
+  ctx.strokeStyle = color; ctx.lineWidth = 2.2;
+  ctx.beginPath(); ctx.arc(x, y - s * 0.55, s, Math.PI * 0.18, Math.PI * 0.82); ctx.stroke();
+  line(x, y + 0.45 * s, x, y - 0.3 * s, color, 1.6);
+  ctx.beginPath(); ctx.arc(x, y - 0.34 * s, 3, 0, 2 * Math.PI); ctx.fillStyle = color; ctx.fill();
+  line(x, y + 0.45 * s, x, y + 0.95 * s, color, 2.2);
+  line(x - 0.35 * s, y + 0.95 * s, x + 0.35 * s, y + 0.95 * s, color, 2.2);
+  ctx.restore();
+}
+function spacecraft(x, y) {
+  rrect(x - 12, y - 10, 24, 20, 3, '#334155', '#cbd5e1');
+  rrect(x - 52, y - 8, 34, 16, 2, '#1e3a8a', '#60a5fa');
+  rrect(x + 18, y - 8, 34, 16, 2, '#1e3a8a', '#60a5fa');
+  line(x - 18, y, x - 12, y, '#cbd5e1', 2); line(x + 12, y, x + 18, y, '#cbd5e1', 2);
+  line(x - 41, y - 8, x - 41, y + 8, '#60a5fa'); line(x - 29, y - 8, x - 29, y + 8, '#60a5fa');
+  line(x + 29, y - 8, x + 29, y + 8, '#60a5fa'); line(x + 41, y - 8, x + 41, y + 8, '#60a5fa');
+  line(x, y - 10, x, y - 17, '#cbd5e1', 2);
+  ctx.beginPath(); ctx.arc(x, y - 27, 10, Math.PI * 0.15, Math.PI * 0.85); ctx.strokeStyle = '#cbd5e1'; ctx.lineWidth = 2; ctx.stroke();
+}
+function box(x, y, w, h, lines, o = {}) {
+  rrect(x, y, w, h, 8, o.fill || '#16204a', o.stroke || C.line, o.lw || 1.2, o.dash);
+  const lh = 15, y0 = y + h / 2 - ((lines.length - 1) * lh) / 2 + 4;
+  lines.forEach((ln, i) => text(ln, x + w / 2, y0 + i * lh, {
+    size: i === 0 ? 13 : 11.5, weight: i === 0 ? 600 : 400, align: 'center', color: i === 0 ? (o.titleColor || C.text) : C.dim
+  }));
+  if (o.tag) {
+    rrect(x + w - 50, y - 9, 48, 17, 8, C.yellow);
+    text(o.tag, x + w - 26, y + 3.5, { size: 10, weight: 700, align: 'center', color: '#1a1a1a' });
+  }
+}
+
+/* ---------------- scene framework ---------------- */
+const scenes = [];
+let cur = 0, t0 = performance.now(), paused = false, pausedAt = 0, S = {};
+const now = () => performance.now();
+const sceneTime = () => ((paused ? pausedAt : now()) - t0) / 1000;
+function restart() { t0 = now(); if (paused) pausedAt = t0; }
+function togglePause() {
+  if (paused) { t0 += now() - pausedAt; paused = false; } else { pausedAt = now(); paused = true; }
+}
+function go(i) {
+  cur = (i + scenes.length) % scenes.length;
+  S = {};
+  const sc = scenes[cur];
+  if (sc.init) sc.init(S);
+  restart();
+  document.getElementById('title').textContent = sc.title;
+  document.getElementById('caption').innerHTML = sc.caption;
+  document.getElementById('counter').textContent = `scene ${cur + 1} of ${scenes.length}`;
+  renderActions(); renderDots();
+}
+function renderActions() {
+  const boxEl = document.getElementById('actions'); boxEl.innerHTML = '';
+  for (const a of scenes[cur].actions || []) {
+    const b = document.createElement('button');
+    b.textContent = a.label;
+    if (a.on && a.on(S)) b.classList.add('on');
+    b.addEventListener('click', e => { a.run(S); renderActions(); e.currentTarget.blur(); });
+    boxEl.appendChild(b);
+  }
+}
+function renderDots() {
+  const boxEl = document.getElementById('dots'); boxEl.innerHTML = '';
+  scenes.forEach((sc, i) => {
+    const d = document.createElement('button');
+    d.className = 'dot' + (i === cur ? ' active' : '');
+    d.title = sc.title;
+    d.addEventListener('click', e => { go(i); e.currentTarget.blur(); });
+    boxEl.appendChild(d);
+  });
+}
+document.getElementById('prev').addEventListener('click', e => { go(cur - 1); e.currentTarget.blur(); });
+document.getElementById('next').addEventListener('click', e => { go(cur + 1); e.currentTarget.blur(); });
+window.addEventListener('keydown', e => {
+  if (e.key === 'ArrowRight') go(cur + 1);
+  else if (e.key === 'ArrowLeft') go(cur - 1);
+  else if (e.key === ' ') { e.preventDefault(); togglePause(); }
+});
+
+/* ================= scene 1: the problem ================= */
+scenes.push({
+  title: '1. The problem: a whisper under a roar',
+  caption: `A spacecraft about 20 light-minutes away sends a steady radio wave. By the time it reaches Earth it is <b>weaker than the background hiss</b> (noise). The bottom panel is what one antenna records: it looks like pure static, but the signal is in there. Here the <b>SNR</b> (signal-to-noise ratio) is about <b>-9 dB</b>, which means the signal has about 1/8 of the power of the noise.`,
+  init(s) { s.noise = noiseArray(6000, 11); s.reveal = false; },
+  actions: [{ label: 'reveal the hidden signal', on: s => s.reveal, run: s => { s.reveal = !s.reveal; } }],
+  draw(t, s) {
+    panel(20, 16, 960, 236, '');
+    spacecraft(90, 128);
+    text('spacecraft', 90, 182, { size: 12, color: C.dim, align: 'center' });
+    const x0 = 160, x1 = 820;
+    ctx.beginPath();
+    for (let x = x0; x <= x1; x += 2) {
+      const d = (x - x0) / (x1 - x0);
+      const y = 128 + 42 * (1 - 0.88 * d) * Math.sin((x - x0) / 13 - t * 5);
+      if (x === x0) ctx.moveTo(x, y); else ctx.lineTo(x, y);
+    }
+    ctx.strokeStyle = C.green; ctx.lineWidth = 2; ctx.stroke();
+    text('about 20 light-minutes of empty space', 490, 52, { size: 13, color: C.dim, align: 'center' });
+    text('the wave spreads out and gets weaker the farther it travels', 490, 226, { size: 13, color: C.dim, align: 'center' });
+    dish(890, 128, 34);
+    text('one antenna on Earth', 890, 190, { size: 12, color: C.dim, align: 'center' });
+
+    panel(20, 268, 960, 256, 'what that one antenna records: signal + noise');
+    const n = 480, off = Math.floor(t * 50) % 5000, A = 0.5;
+    const sig = i => A * Math.sin((2 * Math.PI * (i + off)) / 24);
+    line(40, 400, 960, 400, C.grid);
+    plot(i => sig(i) + s.noise[i + off], n, 40, 300, 920, 200, C.noise, 1.2, 3);
+    if (s.reveal) plot(sig, n, 40, 300, 920, 200, C.green, 2.5, 3);
+    text(s.reveal ? 'green = the hidden signal. It is real, just much smaller than the noise.' : 'Press "reveal the hidden signal" to see what is buried in there.',
+      960, 514, { size: 13, color: s.reveal ? C.green : C.dim, align: 'right' });
+  }
+});
+
+/* ================= scene 2: phase ================= */
+scenes.push({
+  title: '2. Phase: the timing of the wiggle',
+  caption: `Two identical waves. <b>Phase</b> is how far one is shifted along its wiggle. Think of pushing a swing: push at the right moment (<b>in phase</b>) and it goes twice as high; push at the wrong moment (<b>opposite</b>) and you cancel it out. On the right is the same idea drawn as <b>I/Q arrows</b>: arrow length = strength, arrow angle = phase. Adding waves is just adding arrows tip-to-tail.`,
+  init(s) { s.mode = 'sweep'; s.phi = 0; },
+  actions: [
+    { label: 'sweep the phase', on: s => s.mode === 'sweep', run: s => { s.mode = 'sweep'; } },
+    { label: 'in phase', on: s => s.mode === 'in', run: s => { s.mode = 'in'; } },
+    { label: 'opposite', on: s => s.mode === 'opp', run: s => { s.mode = 'opp'; } }
+  ],
+  draw(t, s) {
+    if (s.mode === 'sweep') s.phi = (t * 0.7) % (2 * Math.PI);
+    else {
+      const target = s.mode === 'in' ? 0 : Math.PI;
+      const d = ((((target - s.phi + Math.PI) % (2 * Math.PI)) + 2 * Math.PI) % (2 * Math.PI)) - Math.PI;
+      s.phi += d * 0.08;
+    }
+    const phi = s.phi, w0 = t * 3, per = 60, n = 300;
+    panel(20, 16, 620, 508, '');
+    text('wave A', 40, 44, { size: 13, color: C.green });
+    plot(i => Math.sin((2 * Math.PI * i) / per - w0), n, 40, 52, 580, 110, C.green, 2);
+    text('wave B (the same wave, shifted by the phase)', 40, 186, { size: 13, color: C.cyan });
+    plot(i => Math.sin((2 * Math.PI * i) / per - w0 - phi), n, 40, 194, 580, 110, C.cyan, 2);
+    text('A + B (what a receiver gets when they add up)', 40, 330, { size: 13, color: C.yellow });
+    line(40, 428, 620, 428, C.grid);
+    plot(i => Math.sin((2 * Math.PI * i) / per - w0) + Math.sin((2 * Math.PI * i) / per - w0 - phi), n, 40, 338, 580, 180, C.yellow, 2.5, 2);
+
+    panel(660, 16, 320, 508, 'the same thing as arrows (I/Q)');
+    const cx = 760, cy = 250, R = 70;
+    line(cx - 70, cy, cx + 200, cy, C.grid); line(cx, cy - 150, cx, cy + 150, C.grid);
+    text('I', cx + 205, cy + 4, { size: 12, color: C.dim });
+    text('Q', cx + 6, cy - 152, { size: 12, color: C.dim });
+    const bx = R * Math.cos(phi), by = R * Math.sin(phi);
+    arrow(cx, cy, cx + R, cy, C.green, 3);
+    arrow(cx + R, cy, cx + R + bx, cy + by, C.cyan, 3);
+    arrow(cx, cy, cx + R + bx, cy + by, C.yellow, 3.5, 12);
+    const strength = Math.abs(Math.cos(phi / 2));
+    const deg = ((Math.round((phi * 180) / Math.PI) % 360) + 360) % 360;
+    text(`phase shift: ${deg}\u00b0`, 680, 450, { size: 15 });
+    text(`sum strength: ${Math.round(strength * 100)}% of max`, 680, 476, { size: 15, color: C.yellow });
+    text(strength > 0.9 ? 'in phase: they stack' : strength < 0.15 ? 'opposite: they cancel' : 'partly aligned: some is wasted', 680, 502, { size: 13, color: C.dim });
+  }
+});
+
+/* ================= scene 3: the choir ================= */
+const CHOIR_A = 0.5;
+function setupChoir(s, N) {
+  s.N = N;
+  const r = mulberry32(100 + N);
+  s.delays = Array.from({ length: N }, () => Math.round((r() - 0.5) * 60));
+  s.delays[0] = 22;
+  s.noises = Array.from({ length: N }, (_, i) => noiseArray(3200, 500 + i * 7 + N));
+  const rb = mulberry32(7);
+  s.bits = Array.from({ length: 400 }, () => (rb() < 0.5 ? -1 : 1));
+}
+function choirSig(s, x) {
+  const b = s.bits[Math.floor(x / 40) % s.bits.length];
+  return CHOIR_A * b * Math.sin((2 * Math.PI * x) / 20);
+}
+scenes.push({
+  title: '3. The choir: line them up, then add',
+  caption: `Several dishes hear the <b>same</b> faint signal, each with its own random noise. Because the dishes sit in different places, the signal reaches each one at a slightly different time. Added as-is, the copies partly cancel. So the receiver estimates each dish's delay and phase (JPL's SUMPLE idea: compare each dish against the sum of the others) and shifts them into line. Then the signal stacks perfectly while the noise only partly stacks: <b>N dishes make the signal N times clearer</b> (+3 dB for 2, +6 dB for 4, +9 dB for 8).`,
+  init(s) { setupChoir(s, 8); },
+  actions: [
+    { label: '2 dishes', on: s => s.N === 2, run: s => { setupChoir(s, 2); restart(); } },
+    { label: '4 dishes', on: s => s.N === 4, run: s => { setupChoir(s, 4); restart(); } },
+    { label: '8 dishes', on: s => s.N === 8, run: s => { setupChoir(s, 8); restart(); } },
+    { label: 'replay', run: () => restart() }
+  ],
+  draw(t, s) {
+    const tc = t % 14, alpha = ease((tc - 3.5) / 3.5);
+    const off = Math.floor(t * 40) % 2600, n = 300, base = 100, N = s.N, shown = Math.min(N, 4);
+    panel(20, 16, 470, 508, `what each dish hears (${N} dishes${N > 4 ? ', first 4 shown' : ''})`);
+    for (let i = 0; i < shown; i++) {
+      const y = 36 + i * 118;
+      dish(58, y + 50, 22);
+      text(`dish ${i + 1}`, 58, y + 100, { size: 11, color: C.dim, align: 'center' });
+      const d = s.delays[i] * (1 - alpha);
+      line(100, y + 52, 476, y + 52, C.grid);
+      plot(k => choirSig(s, k + off + base - d) + s.noises[i][k + off], n, 100, y + 10, 376, 84, C.noise, 1.1, 3);
+      plot(k => choirSig(s, k + off + base - d), n, 100, y + 10, 376, 84, C.green, 1.6, 3);
+    }
+    text('gray = what the dish records  \u00b7  green = the hidden signal (only shown for you)', 34, 514, { size: 10.5, color: C.dim });
+
+    panel(510, 16, 470, 300, '');
+    const stepTxt = tc < 3.5 ? 'step 1: add them as-is (misaligned): they partly cancel'
+      : tc < 7 ? 'step 2: aligning each dish against the sum of the others...'
+      : 'step 3: aligned. the signal stacks, the noise does not';
+    text(stepTxt, 526, 40, { size: 13, weight: 600, color: tc < 3.5 ? C.red : tc < 7 ? C.cyan : C.green });
+    const comb = k => {
+      let v = 0;
+      for (let i = 0; i < N; i++) v += choirSig(s, k + off + base - s.delays[i] * (1 - alpha)) + s.noises[i][k + off];
+      return v / N;
+    };
+    line(526, 175, 964, 175, C.grid);
+    plot(comb, n, 526, 60, 438, 230, C.yellow, 1.8, 1.6);
+    if (tc >= 7) plot(k => choirSig(s, k + off + base), n, 526, 60, 438, 230, C.green, 1.4, 1.6, [5, 4]);
+    text('combined output (sum of all dishes, divided by N)', 526, 306, { size: 12, color: C.dim });
+
+    panel(510, 330, 470, 194, '');
+    const single = -9.0, gain = db(N);
+    text('each dish alone', 530, 368, { size: 15, color: C.dim });
+    text(`${single.toFixed(1)} dB`, 960, 368, { size: 15, align: 'right' });
+    text(`choir of ${N}, misaligned`, 530, 402, { size: 15, color: C.dim });
+    text('signal partly cancels', 960, 402, { size: 15, align: 'right', color: C.red });
+    text(`choir of ${N}, aligned`, 530, 436, { size: 15, color: C.dim });
+    text(`${(single + gain).toFixed(1)} dB   (+${gain.toFixed(1)} dB)`, 960, 436, { size: 15, align: 'right', color: C.green, weight: 600 });
+    text('alignment', 530, 476, { size: 12, color: C.dim });
+    rrect(600, 466, 360, 12, 6, '#1b2547');
+    rrect(600, 466, Math.max(12, 360 * alpha), 12, 6, C.cyan);
+    text('ideal gain for identical dishes = 10 x log10(N) dB', 530, 508, { size: 12, color: C.dim });
+  }
+});
+
+/* ================= scene 4: frames + CRC ================= */
+const SYNC = [0, 0, 0, 1, 1, 0, 1, 0];
+function crc4(bits) {
+  let reg = 0;
+  for (const b of bits) {
+    const fb = ((reg >> 3) & 1) ^ b;
+    reg = (reg << 1) & 0xf;
+    if (fb) reg ^= 0x3;
+  }
+  return [3, 2, 1, 0].map(k => (reg >> k) & 1);
+}
+const toBits = (v, n) => Array.from({ length: n }, (_, i) => (v >> (n - 1 - i)) & 1);
+const fromBits = b => b.reduce((acc, x) => acc * 2 + x, 0);
+function buildStream(s) {
+  const r = mulberry32(42);
+  s.frames = []; s.stream = []; s.role = [];
+  for (let f = 0; f < 160; f++) {
+    let frameBits, tries = 0;
+    for (;;) {
+      const v1 = clamp(Math.round(128 + 90 * Math.sin(f * 0.35) + (r() - 0.5) * 20), 0, 255);
+      const v2 = clamp(Math.round(128 + 90 * Math.sin(f * 0.35 + 0.15) + (r() - 0.5) * 20), 0, 255);
+      const hdr = toBits(f % 16, 4), data = [...toBits(v1, 8), ...toBits(v2, 8)];
+      frameBits = [...SYNC, ...hdr, ...data, ...crc4([...hdr, ...data])];
+      const prev = s.stream.slice(-7), test = [...prev, ...frameBits, ...SYNC.slice(0, 7)];
+      let spurious = false;
+      for (let p = 0; p + 8 <= test.length; p++) {
+        if (p !== prev.length && SYNC.every((b, k) => test[p + k] === b)) { spurious = true; break; }
+      }
+      if (!spurious || ++tries > 50) break;
+    }
+    s.frames.push({ start: s.stream.length });
+    s.stream.push(...frameBits);
+    s.role.push(...Array(8).fill('sync'), ...Array(4).fill('hdr'), ...Array(16).fill('data'), ...Array(4).fill('crc'));
+  }
+}
+function rxProcess(s, upto) {
+  while (s.processed < upto && s.processed < s.stream.length) {
+    const i = s.processed++;
+    let score = 0;
+    if (i >= 7) for (let k = 0; k < 8; k++) if (s.stream[i - 7 + k] === SYNC[k]) score++;
+    s.scores[i] = score;
+    if (score === 8) { s.pending.push(i - 7); s.syncFlash = i; }
+    while (s.pending.length && s.pending[0] + 32 <= i + 1) {
+      const p = s.pending.shift();
+      const hdr = s.stream.slice(p + 8, p + 12), data = s.stream.slice(p + 12, p + 28), crc = s.stream.slice(p + 28, p + 32);
+      const ok = crc4([...hdr, ...data]).every((b, k) => b === crc[k]);
+      const id = String(fromBits(hdr)).padStart(2, '0');
+      const val = x => { const y = (fromBits(x) / 255) * 2 - 1; return (y >= 0 ? '+' : '') + y.toFixed(2); };
+      s.log.push(ok
+        ? { ok, msg: `frame ${id} | channel M-6 | ${val(data.slice(0, 8))}  ${val(data.slice(8))} | CRC OK -> logged` }
+        : { ok, msg: `frame ${id} | CRC FAIL -> discarded, never logged` });
+      if (s.log.length > 7) s.log.shift();
+    }
+  }
+}
+scenes.push({
+  title: '4. Frames: sync marker, data, checksum',
+  caption: `The spacecraft sends bits in packets called <b>frames</b>: a known <b>sync marker</b> (it means "a frame starts here"), a small header, the <b>telemetry data</b> (real Curiosity values, normalized), and a <b>CRC</b>: a tiny fingerprint computed from the data. The receiver slides along the bits hunting for the sync marker (middle panel), reads the frame, and recomputes the fingerprint. If it does not match, the frame was damaged, so it is <b>thrown away instead of logged</b>. Try corrupting one.`,
+  init(s) { buildStream(s); s.processed = 0; s.scores = []; s.pending = []; s.log = []; s.corrupt = new Set(); s.syncFlash = -99; s.arrived = 0; },
+  actions: [{
+    label: 'corrupt the next frame', run: s => {
+      const f = s.frames.find(fr => fr.start + 12 > s.arrived + 2);
+      if (f) { const idx = f.start + 12 + Math.floor(Math.random() * 16); s.stream[idx] ^= 1; s.corrupt.add(idx); }
+    }
+  }],
+  draw(t, s) {
+    const arrived = Math.min(s.stream.length, Math.floor(t * 9));
+    s.arrived = arrived;
+    rxProcess(s, arrived);
+    const cell = 20, cols = 46, rightX = 950;
+
+    panel(20, 16, 960, 150, 'bits arriving at the receiver (newest on the right)');
+    let lx = 520;
+    for (const [lab, col] of [['sync marker', C.cyan], ['header', C.purple], ['telemetry data', C.green], ['CRC', C.yellow]]) {
+      rrect(lx, 27, 12, 12, 2, col);
+      text(lab, lx + 18, 38, { size: 12, color: C.dim });
+      lx += textWidth(lab, 12) + 40;
+    }
+    for (let j = 0; j < cols; j++) {
+      const i = arrived - 1 - j;
+      if (i < 0) break;
+      const x = rightX - (j + 1) * cell, role = s.role[i], bad = s.corrupt.has(i);
+      const col = role === 'sync' ? C.cyan : role === 'hdr' ? C.purple : role === 'data' ? C.green : C.yellow;
+      rrect(x + 1, 62, cell - 2, 34, 3, '#1b2547', bad ? C.red : col, bad ? 2.5 : 1.3);
+      text(String(s.stream[i]), x + cell / 2, 85, { size: 14, mono: true, align: 'center', color: bad ? C.red : C.text });
+    }
+    text('The receiver only gets the 0s and 1s; the colors are for you.', 32, 118, { size: 11.5, color: C.dim });
+    text('Toy sizes: 8-bit sync 0x1A (the first byte of the real CCSDS marker 0x1ACFFC1D) and a 4-bit CRC (the project uses CRC-16).', 32, 136, { size: 11.5, color: C.dim });
+    text('One frame = sync 8 + header 4 + data 16 (two values) + CRC 4 = 32 bits.', 32, 154, { size: 11.5, color: C.dim });
+
+    panel(20, 178, 960, 150, 'sync detector: how many of the last 8 bits match the sync marker (8 of 8 = frame found)');
+    line(40, 220, 960, 220, C.grid, 1, [4, 4]);
+    text('8/8', 44, 216, { size: 11, color: C.dim });
+    for (let j = 0; j < cols; j++) {
+      const i = arrived - 1 - j;
+      if (i < 0) break;
+      const x = rightX - (j + 1) * cell, sc = s.scores[i] || 0, hgt = (sc / 8) * 90;
+      rrect(x + 3, 310 - hgt, cell - 6, Math.max(2, hgt), 2, sc === 8 ? C.yellow : '#2b4a7a');
+    }
+    if (s.syncFlash >= 0 && arrived - 1 - s.syncFlash < 14) text('SYNC FOUND: a frame starts here', 960, 198, { size: 13, weight: 700, color: C.yellow, align: 'right' });
+
+    panel(20, 340, 960, 184, 'telemetry log (only frames that pass the CRC get logged)');
+    s.log.forEach((e, k) => text(e.msg, 40, 382 + k * 19, { size: 13.5, mono: true, color: e.ok ? C.green : C.red }));
+    if (!s.log.length) text('waiting for the first complete frame...', 40, 382, { size: 13.5, mono: true, color: C.dim });
+  }
+});
+
+/* ================= scene 5: the hijack ================= */
+const HJ = { N: 4, a: 1, sigma: 1, theta: [0.3, 2.1, 4.0, 5.2], psi: [1.0, 3.9, 0.4, 2.6] };
+function hijackWeights(b) {
+  const { N, a, sigma } = HJ;
+  const h = HJ.theta.map(cexp), g = HJ.psi.map(cexp);
+  let v = Array.from({ length: N }, () => cpx(1));
+  for (let it = 0; it < 80; it++) {
+    const hv = inner(h, v), gv = inner(g, v);
+    const nv = v.map((vi, i) => cadd(cadd(cscale(cmul(h[i], hv), a * a), cscale(cmul(g[i], gv), b * b)), cscale(vi, sigma * sigma)));
+    const nrm = Math.sqrt(nv.reduce((acc, z) => acc + cabs(z) ** 2, 0));
+    v = nv.map(z => cscale(z, 1 / nrm));
+  }
+  const wCons = v.map(z => cexp(carg(z)));
+  const wVer = h.map(z => cpx(z.re, z.im));
+  const gh = inner(g, h), k = (b * b) / (sigma * sigma + b * b * N);
+  let wNull = h.map((hi, i) => csub(hi, cmul(g[i], cscale(gh, k))));
+  const scale = cdiv(cpx(N), cconj(inner(wNull, h)));
+  wNull = wNull.map(z => cmul(z, scale));
+  return { h, g, sets: [wCons, wVer, wNull] };
+}
+function hijackOutput(h, g, w, b, lam) {
+  let Ssum = cpx(0), Rsum = cpx(0), wn = 0;
+  const contrib = [];
+  for (let i = 0; i < h.length; i++) {
+    const wl = cscale(cexp(lam * carg(w[i])), 1 - lam + lam * cabs(w[i]));
+    const cs = cmul(cconj(wl), cscale(h[i], HJ.a)), cr = cmul(cconj(wl), cscale(g[i], b));
+    Ssum = cadd(Ssum, cs); Rsum = cadd(Rsum, cr); wn += cabs(wl) ** 2;
+    contrib.push({ cs, cr });
+  }
+  return { Ssum, Rsum, contrib, sinr: cabs(Ssum) ** 2 / (cabs(Rsum) ** 2 + HJ.sigma ** 2 * wn) };
+}
+scenes.push({
+  title: '5. The hijack: consensus vs. "trust what decodes"',
+  caption: `Now a loud <b>interferer</b> (red) hits every dish on top of the spacecraft (green). Each circle is one dish, and its arrows show what that dish hears. Combining = rotating each dish's arrows, then adding them tip-to-tail. <b>Consensus</b> lines up whatever is loudest, so a strong interferer gets amplified (hijacked). <b>Verified</b> lines up the spacecraft, measured against frames that passed the CRC. <b>Verified + nulling</b> also cancels the interferer. Try all three interferer strengths. (The pass/fail threshold is illustrative.)`,
+  init(s) { s.b = 2; s.W = hijackWeights(2); },
+  actions: [
+    { label: 'weak interferer (0.5x)', on: s => s.b === 0.5, run: s => { s.b = 0.5; s.W = hijackWeights(0.5); restart(); } },
+    { label: 'strong (2x)', on: s => s.b === 2, run: s => { s.b = 2; s.W = hijackWeights(2); restart(); } },
+    { label: 'very strong (5x)', on: s => s.b === 5, run: s => { s.b = 5; s.W = hijackWeights(5); restart(); } },
+    { label: 'replay', run: () => restart() }
+  ],
+  draw(t, s) {
+    const lam = ease(((t % 12) - 1.5) / 3);
+    const titles = ['consensus (agree with the group)', 'verified (agree with the checksum)', 'verified + nulling'];
+    const { h, g, sets } = s.W, b = s.b;
+    for (let col = 0; col < 3; col++) {
+      const x0 = 20 + col * 324, wC = 312;
+      panel(x0, 16, wC, 508, '');
+      text(titles[col], x0 + wC / 2, 40, { size: 14, weight: 600, align: 'center', color: col === 0 ? C.text : C.yellow });
+      text(lam <= 0 ? 'before combining' : lam < 1 ? 'combining...' : 'after combining', x0 + wC / 2, 60, { size: 12, align: 'center', color: C.dim });
+      const out = hijackOutput(h, g, sets[col], b, lam);
+      const kArrow = 26 / Math.max(HJ.a, b);
+      for (let i = 0; i < HJ.N; i++) {
+        const cx = x0 + 42 + i * 76, cy = 112;
+        ctx.beginPath(); ctx.arc(cx, cy, 32, 0, 2 * Math.PI); ctx.strokeStyle = C.grid; ctx.lineWidth = 1; ctx.stroke();
+        const { cs, cr } = out.contrib[i];
+        arrow(cx, cy, cx + cr.re * kArrow, cy - cr.im * kArrow, C.red, 2, 7);
+        arrow(cx, cy, cx + cs.re * kArrow, cy - cs.im * kArrow, C.green, 2.5, 7);
+        text(`dish ${i + 1}`, cx, cy + 50, { size: 11, color: C.dim, align: 'center' });
+      }
+      const k2 = 120 / (HJ.N * Math.max(HJ.a, b));
+      const chain = (key, color, cy, label) => {
+        const items = out.contrib.map(c => c[key]);
+        const sum = items.reduce((acc, z) => cadd(acc, z), cpx(0));
+        const rot = cexp(-carg(sum));
+        let px = x0 + 40, py = cy;
+        ctx.save(); ctx.beginPath(); ctx.rect(x0 + 6, cy - 46, wC - 12, 96); ctx.clip();
+        for (const z0 of items) {
+          const z = cmul(z0, rot), nx = px + z.re * k2, ny = py - z.im * k2;
+          arrow(px, py, nx, ny, color, 2, 7);
+          px = nx; py = ny;
+        }
+        ctx.restore();
+        text(`${label}: ${cabs(sum).toFixed(1)}`, x0 + 16, cy - 32, { size: 12, color });
+      };
+      chain('cs', C.green, 236, 'spacecraft, added up');
+      chain('cr', C.red, 340, 'interferer, added up');
+      const sinrDb = db(out.sinr), ok = sinrDb >= 3;
+      line(x0 + 16, 398, x0 + wC - 16, 398, C.grid);
+      text('signal vs. interference + noise, after combining', x0 + 16, 420, { size: 12, color: C.dim });
+      text(`${sinrDb >= 0 ? '+' : ''}${sinrDb.toFixed(1)} dB`, x0 + 16, 454, { size: 26, weight: 700, color: ok ? C.green : C.red });
+      text(lam < 1 ? '' : ok ? 'frames decode: CRC OK' : 'frames fail: CRC FAIL', x0 + 16, 484, { size: 15, weight: 600, color: ok ? C.green : C.red });
+      if (lam >= 1 && col === 0 && !ok) text('hijacked: it lined up the interferer', x0 + 16, 506, { size: 12, color: C.red });
+      if (lam >= 1 && col === 1 && !ok) text('better, but the interferer still leaks in', x0 + 16, 506, { size: 12, color: C.dim });
+      if (lam >= 1 && col === 2 && ok) text('interferer cancelled', x0 + 16, 506, { size: 12, color: C.green });
+    }
+  }
+});
+
+/* ================= scene 6: elastic arraying ================= */
+function buildElastic(s) {
+  const M = 6, steps = 600, T = 1.2, recruitAt = 1.25 * T, releaseAt = 1.9 * T, hold = 25, joinDelay = 8;
+  const base = [1.0, 0.8, 0.65, 0.5, 0.4, 0.3];
+  Object.assign(s, { M, steps, T, snr: [], active: [], sumAct: [], sumAll: [], count: [], dead: [], cum: [] });
+  const snrAt = k => {
+    const u = k / (steps - 1), e = 0.45 + 0.75 * Math.sin(Math.PI * u);
+    return base.map((b0, i) => {
+      let v = b0 * e;
+      if (i === 1) v *= 1 - 0.85 * Math.exp(-(((u - 0.3) / 0.05) ** 2));
+      if (i === 2 && u > 0.62) v = 0;
+      return v;
+    });
+  };
+  const joinT = Array(M).fill(0);
+  const first = snrAt(0).map((v, i) => [v, i]).sort((x, y) => y[0] - x[0]);
+  const active = new Set();
+  let acc = 0;
+  for (const [v, i] of first) { if (acc >= recruitAt) break; active.add(i); acc += v; }
+  let calm = 0, hoursEl = 0, hoursAll = 0, okEl = 0, okAll = 0;
+  for (let k = 0; k < steps; k++) {
+    const snr = snrAt(k), dead = snr.map(v => v === 0);
+    for (const i of [...active]) if (dead[i]) active.delete(i);
+    const settled = i => k - joinT[i] >= joinDelay;
+    const expected = [...active].reduce((a2, i) => a2 + snr[i], 0);
+    if (expected < recruitAt) {
+      const cand = snr.map((v, i) => [v, i]).filter(([, i]) => !active.has(i) && !dead[i]).sort((x, y) => y[0] - x[0]);
+      if (cand.length) { active.add(cand[0][1]); joinT[cand[0][1]] = k; }
+      calm = 0;
+    } else {
+      const act = [...active].filter(settled);
+      if (act.length > 1) {
+        const weakest = act.reduce((m, i) => (snr[i] < snr[m] ? i : m), act[0]);
+        if (expected - snr[weakest] > releaseAt) { if (++calm > hold) { active.delete(weakest); calm = 0; } } else calm = 0;
+      }
+    }
+    const sumAct = [...active].reduce((a2, i) => a2 + (settled(i) ? snr[i] : 0), 0);
+    const sumAll = k >= joinDelay ? snr.reduce((a2, v) => a2 + v, 0) : 0;
+    hoursEl += active.size; hoursAll += dead.filter(d => !d).length;
+    if (sumAct >= T) okEl++;
+    if (sumAll >= T) okAll++;
+    s.snr.push(snr); s.active.push(new Set(active)); s.sumAct.push(sumAct); s.sumAll.push(sumAll); s.count.push(active.size); s.dead.push(dead);
+    s.cum.push({ hoursEl, hoursAll, okEl: okEl / (k + 1), okAll: okAll / (k + 1) });
+  }
+}
+scenes.push({
+  title: '6. Elastic arraying: give antennas back',
+  caption: `Antenna time is scarce: NASA's Deep Space Network has had up to 40% more requests than it can serve. So the receiver uses <b>only as many dishes as the link needs</b>. It knows each dish's verified strength, <b>recruits dishes fast</b> when the signal weakens (a storm, a dead dish, the spacecraft setting), and <b>releases them slowly</b> when there is spare margin. Goal: the same telemetry delivered with fewer antenna-hours. (Illustrative numbers; the real ones come from the MATLAB sim.)`,
+  init(s) { buildElastic(s); },
+  actions: [{ label: 'replay', run: () => restart() }],
+  draw(t, s) {
+    const k = Math.min(s.steps - 1, Math.floor((t % 24) * 30));
+    panel(20, 16, 960, 150, '');
+    for (let i = 0; i < s.M; i++) {
+      const x = 105 + i * 158, act = s.active[k].has(i), dead = s.dead[k][i];
+      dish(x, 60, 24, dead ? C.red : act ? C.cyan : C.gray, act || dead ? 1 : 0.55);
+      text(`dish ${i + 1}`, x, 112, { size: 12, color: C.dim, align: 'center' });
+      text(dead ? 'dead' : act ? 'in use' : 'released', x, 130, { size: 12, align: 'center', color: dead ? C.red : act ? C.cyan : C.dim, weight: act ? 600 : 400 });
+      rrect(x - 35, 141, 70, 8, 4, '#1b2547');
+      rrect(x - 35, 141, clamp(s.snr[k][i] / 1.2, 0, 1) * 70, 8, 4, dead ? C.red : C.green);
+    }
+    panel(20, 178, 960, 346, '');
+    const cx0 = 70, cx1 = 690, cy0 = 214, cy1 = 436, ymax = 4.5;
+    const X = j => cx0 + (j / (s.steps - 1)) * (cx1 - cx0), Y = v => cy1 - (v / ymax) * (cy1 - cy0);
+    line(cx0, cy1, cx1, cy1, C.grid); line(cx0, cy0, cx0, cy1, C.grid);
+    text('combined signal strength', cx0, cy0 - 12, { size: 12, color: C.dim });
+    text('time during the pass', cx1, cy1 + 18, { size: 12, color: C.dim, align: 'right' });
+    for (const [u, lab] of [[0.3, 'storm over dish 2'], [0.62, 'dish 3 dies'], [0.88, 'spacecraft setting']]) {
+      const j = Math.round(u * (s.steps - 1));
+      if (k >= j) { line(X(j), cy0, X(j), cy1, C.dim, 1, [2, 4]); text(lab, X(j) + 4, cy0 + 12, { size: 11, color: C.dim }); }
+    }
+    line(cx0, Y(s.T), cx1, Y(s.T), C.red, 1.5, [6, 5]);
+    const path = (arr, color, lw, dash) => {
+      ctx.beginPath();
+      for (let j = 0; j <= k; j++) { const px = X(j), py = Y(arr[j]); if (j === 0) ctx.moveTo(px, py); else ctx.lineTo(px, py); }
+      ctx.strokeStyle = color; ctx.lineWidth = lw; ctx.setLineDash(dash || []); ctx.stroke(); ctx.setLineDash([]);
+    };
+    path(s.sumAll, C.dim, 1.5, [3, 4]);
+    path(s.sumAct, C.yellow, 2.5);
+    const sy0 = 466, sy1 = 512;
+    text('dishes in use', cx0, sy0 - 6, { size: 12, color: C.dim });
+    ctx.fillStyle = 'rgba(56,189,248,0.6)';
+    for (let j = 0; j <= k; j++) { const hgt = (s.count[j] / s.M) * (sy1 - sy0); ctx.fillRect(X(j), sy1 - hgt, (cx1 - cx0) / s.steps + 0.6, hgt); }
+    line(X(k), cy0, X(k), sy1, C.text, 1, [2, 3]);
+
+    const c = s.cum[k], hrs = v => ((v * 8) / s.steps).toFixed(1);
+    line(725, 222, 755, 222, C.yellow, 2.5); text('elastic (ours)', 763, 226, { size: 13 });
+    line(725, 244, 755, 244, C.dim, 1.5, [3, 4]); text('always use every dish', 763, 248, { size: 13 });
+    line(725, 266, 755, 266, C.red, 1.5, [6, 5]); text('needed for frames to decode', 763, 270, { size: 13 });
+    text('antenna-hours used so far', 725, 318, { size: 12, color: C.dim });
+    text(`elastic ${hrs(c.hoursEl)} h   vs   all ${hrs(c.hoursAll)} h`, 725, 340, { size: 14 });
+    text(`${Math.round((1 - c.hoursEl / c.hoursAll) * 100)}% saved`, 725, 370, { size: 24, weight: 700, color: C.green });
+    text('frames delivered so far', 725, 414, { size: 12, color: C.dim });
+    text(`elastic ${(c.okEl * 100).toFixed(1)}%   vs   all ${(c.okAll * 100).toFixed(1)}%`, 725, 436, { size: 14 });
+    text(`dishes in use right now: ${s.count[k]} of ${s.M}`, 725, 470, { size: 14, color: C.cyan });
+  }
+});
+
+/* ================= scene 7: the supervisor ================= */
+const SUP = {
+  loop: 26,
+  events: [
+    { t: 0.0, st: 'SEARCH', log: 'SEARCH   scanning all dishes for a carrier' },
+    { t: 1.6, st: 'ALIGN', log: 'ALIGN    carrier on dishes 1-4, aligning on sync marker' },
+    { t: 3.0, st: 'LOCK', log: 'LOCK     locking carrier frequency + symbol timing' },
+    { t: 4.0, st: 'DECODE', log: 'DECODE   frames passing CRC, 4 dishes combined' },
+    { t: 7.5, fault: 'dish 3 dies', log: 'DECODE   dish 3: no verified signal -> weight 0' },
+    { t: 11.0, fault: 'clock glitch on dishes 2 + 4', st: 'FALLBACK', log: 'FALLBACK CRC pass rate 35% -> best single dish (1)' },
+    { t: 13.5, st: 'ALIGN', log: 'ALIGN    re-aligning dishes 2+4 on verified frames' },
+    { t: 14.8, st: 'DECODE', log: 'DECODE   dishes 2+4 rejoined, full array again' },
+    { t: 17.5, fault: 'frequency hop', st: 'LOST', log: 'LOST     no sync marker for 2 frames' },
+    { t: 18.3, st: 'SEARCH', log: 'SEARCH   sweeping frequencies' },
+    { t: 19.6, st: 'ALIGN', log: 'ALIGN    carrier at a new frequency, re-aligning' },
+    { t: 20.6, st: 'LOCK', log: 'LOCK     re-locked' },
+    { t: 21.2, st: 'DECODE', log: 'DECODE   recovered 3.7 s after the hop' },
+    { t: 23.0, fault: 'dish 3 comes back', log: 'DECODE   dish 3 verified again -> re-admitted' }
+  ],
+  nodes: {
+    SEARCH: [110, 96, 'is anything there?'], ALIGN: [310, 96, 'line up the dishes'], LOCK: [310, 236, 'pitch + beat'],
+    DECODE: [110, 236, 'frames + CRC'], LOST: [110, 386, 'signal gone'], FALLBACK: [310, 386, 'best single dish']
+  },
+  edges: {
+    'SEARCH>ALIGN': [[185, 96], [235, 96]],
+    'ALIGN>LOCK': [[310, 123], [310, 209]],
+    'LOCK>DECODE': [[235, 236], [185, 236]],
+    'DECODE>FALLBACK': [[160, 263], [260, 359]],
+    'FALLBACK>ALIGN': [[385, 386], [404, 386], [404, 96], [385, 96]],
+    'DECODE>LOST': [[110, 263], [110, 359]],
+    'LOST>SEARCH': [[35, 386], [27, 386], [27, 96], [35, 96]]
+  }
+};
+function supHealth(x) {
+  if (x < 4) return null;
+  if (x < 7.5) return 0.98;
+  if (x < 11) return 0.95;
+  if (x < 11.6) return 0.35;
+  if (x < 14.8) return 0.72;
+  if (x < 17.5) return 0.97;
+  if (x < 21.2) return 0;
+  return 0.97;
+}
+scenes.push({
+  title: '7. The supervisor: it notices, recovers, and logs',
+  caption: `A small state machine runs the receiver: <b>search</b> for a signal, <b>align</b> the dishes, <b>lock</b> pitch and timing, <b>decode</b> frames. When things break, it falls back to the best single verified dish or goes back to searching, then rebuilds the full array on its own. Faults (red) come from a <b>hidden random seed</b>: the supervisor never sees the fault list, only its own health (CRC pass rate, sync-marker strength, per-dish verified signal). (Illustrative timeline.)`,
+  init() {},
+  actions: [{ label: 'replay', run: () => restart() }],
+  draw(t) {
+    const tt = t % SUP.loop;
+    let st = 'SEARCH', prev = 'SEARCH', since = 0;
+    for (const e of SUP.events) { if (e.t > tt) break; if (e.st) { prev = st; st = e.st; since = e.t; } }
+    panel(20, 16, 410, 508, '');
+    for (const [key, pts] of Object.entries(SUP.edges)) {
+      const activeEdge = key === `${prev}>${st}` && tt - since < 0.9;
+      polyArrow(pts, activeEdge ? C.yellow : '#3a4a7a', activeEdge ? 2.5 : 1.6);
+      if (activeEdge) {
+        const [px, py] = pointAlong(pts, (tt - since) / 0.9);
+        ctx.beginPath(); ctx.arc(px, py, 5, 0, 2 * Math.PI); ctx.fillStyle = C.yellow; ctx.fill();
+      }
+    }
+    for (const [name, [x, y, sub]] of Object.entries(SUP.nodes)) {
+      const on = name === st;
+      ctx.save();
+      if (on) { ctx.shadowColor = C.yellow; ctx.shadowBlur = 18; }
+      rrect(x - 75, y - 27, 150, 54, 10, on ? '#3b3410' : '#16204a', on ? C.yellow : C.line, on ? 2 : 1.2);
+      ctx.restore();
+      text(name, x, y - 3, { size: 14, weight: 700, align: 'center', color: on ? C.yellow : C.text });
+      text(sub, x, y + 15, { size: 11.5, align: 'center', color: C.dim });
+    }
+    text('sees: CRC pass rate, sync strength, per-dish signal', 36, 460, { size: 12, color: C.dim });
+    text('never sees: the fault list', 36, 480, { size: 12, color: C.red });
+    text('truth is only used afterwards, to grade it', 36, 500, { size: 12, color: C.dim });
+
+    panel(450, 16, 530, 340, 'receiver log');
+    const lines = [];
+    for (const e of SUP.events) {
+      if (e.t > tt) break;
+      if (e.fault) lines.push({ c: C.red, s: `t=${e.t.toFixed(1).padStart(4)}s  [hidden fault] ${e.fault}` });
+      lines.push({ c: e.st === 'LOST' || e.st === 'FALLBACK' ? C.yellow : C.text, s: `t=${e.t.toFixed(1).padStart(4)}s  ${e.log}` });
+    }
+    lines.slice(-14).forEach((l, i) => text(l.s, 466, 50 + i * 21, { size: 12, mono: true, color: l.c }));
+
+    panel(450, 368, 530, 156, 'decoder health: CRC pass rate');
+    const hx0 = 500, hx1 = 960, hy0 = 400, hy1 = 500;
+    const HX = x => hx0 + (x / SUP.loop) * (hx1 - hx0), HY = v => hy1 - v * (hy1 - hy0);
+    line(hx0, hy1, hx1, hy1, C.grid); line(hx0, hy0, hx1, hy0, C.grid, 1, [2, 4]);
+    text('100%', hx0 - 6, hy0 + 4, { size: 10, color: C.dim, align: 'right' });
+    text('0%', hx0 - 6, hy1 + 4, { size: 10, color: C.dim, align: 'right' });
+    ctx.beginPath();
+    let started = false;
+    for (let x = 0; x <= tt; x += 0.05) {
+      const v = supHealth(x);
+      if (v === null) { started = false; continue; }
+      const py = HY(clamp(v + (v > 0.5 ? 0.012 * Math.sin(x * 9.3) : 0), 0, 1));
+      if (!started) { ctx.moveTo(HX(x), py); started = true; } else ctx.lineTo(HX(x), py);
+    }
+    ctx.strokeStyle = C.green; ctx.lineWidth = 2; ctx.stroke();
+    for (const e of SUP.events) if (e.fault && e.t <= tt) line(HX(e.t), hy0 - 6, HX(e.t), hy1, C.red, 1.2, [3, 3]);
+    line(HX(tt), hy0 - 6, HX(tt), hy1, C.text, 1, [2, 3]);
+    text('red lines = hidden faults', hx1, 516, { size: 11, color: C.red, align: 'right' });
+  }
+});
+
+/* ================= scene 8: the whole pipeline ================= */
+scenes.push({
+  title: '8. The whole pipeline on one page',
+  caption: `Top: our simulated spacecraft packs <b>real Curiosity telemetry</b> into frames. Middle: a simulated channel adds noise, delays, drift and hidden faults to each dish. Bottom: <b>our receiver</b>. The two yellow tags mark our key ideas: <b>trust weights</b> learned from frames that passed the CRC ("trust what decodes, not what agrees"), and <b>elastic arraying</b>. The scoreboard compares the log with the truth, but the truth never flows into the receiver.`,
+  init() {},
+  actions: [],
+  draw(t) {
+    text('simulated spacecraft', 40, 34, { size: 12, weight: 600, color: C.dim });
+    box(40, 44, 220, 52, ['Curiosity telemetry', 'real NASA MSL values, normalized']);
+    box(330, 44, 220, 52, ['pack into frames', 'header + data + CRC-16']);
+    box(620, 44, 240, 52, ['CCSDS waveform', 'sync marker + modulation (MATLAB)']);
+    arrow(260, 70, 330, 70, C.dim, 1.6); arrow(550, 70, 620, 70, C.dim, 1.6);
+    box(40, 124, 920, 50, ['simulated channel: N dishes', 'each with its own noise, delay, phase and Doppler drift  \u00b7  faults from a hidden random seed'], { stroke: C.gray, dash: [5, 4] });
+    arrow(740, 96, 740, 124, C.dim, 1.6);
+    text('receiver (ours)', 110, 202, { size: 12, weight: 600, color: C.dim });
+    const xs = [40, 174, 308, 442, 576, 710, 844];
+    const labels = [['find', 'each dish'], ['align', 'on sync marker'], ['trust weights', 'from verified frames'], ['combine', 'weighted sum'], ['lock', 'carrier + timing'], ['frame sync', '+ CRC check'], ['telemetry log', 'verified frames only']];
+    xs.forEach((x, i) => box(x, 210, 118, 56, labels[i], i === 2 ? { tag: 'OURS', stroke: C.yellow, titleColor: C.yellow } : {}));
+    for (let i = 0; i < 6; i++) arrow(xs[i] + 118, 238, xs[i + 1], 238, C.dim, 1.6);
+    arrow(99, 174, 99, 210, C.dim, 1.6);
+    const fb = [[769, 266], [769, 298], [367, 298], [367, 266]];
+    polyArrow(fb, C.yellow, 2);
+    text('verified frames become a clean reference: "trust what decodes, not what agrees"', 568, 316, { size: 12, color: C.yellow, align: 'center' });
+    box(40, 340, 440, 56, ['supervisor (state machine)', 'search, align, lock, decode, lost / fallback  \u00b7  watches decoder health only']);
+    line(150, 340, 150, 266, C.dim, 1.2, [4, 4]);
+    box(520, 340, 440, 56, ['elastic arraying', 'recruits / releases dishes to hit the target error rate'], { tag: 'OURS', stroke: C.yellow, titleColor: C.yellow });
+    const el = [[960, 368], [980, 368], [980, 149], [960, 149]];
+    polyArrow(el, C.cyan, 1.6, [5, 4]);
+    text('recruit / release', 975, 330, { size: 11, color: C.cyan, align: 'right' });
+    box(40, 420, 920, 100, [
+      'scoreboard (grading only: the truth never enters the receiver)',
+      'compares the telemetry log against the true payload',
+      'payload recovered  \u00b7  missed frames  \u00b7  recovery time  \u00b7  antenna-hours',
+      'baselines: best single dish, equal weights  \u00b7  ideal bound: sum of per-dish SNRs'
+    ], { stroke: C.gray, dash: [5, 4], fill: '#111936' });
+    flowDots(fb, t, C.yellow, 0.35, 2);
+    flowDots(el, t, C.cyan, 0.3, 2);
+  }
+});
+
+/* ================= scene 9: the breadboard version ================= */
+scenes.push({
+  title: 'Bonus: the breadboard version (LEDs + one light sensor)',
+  caption: `The flip side: <b>many transmitters, one receiver</b> (NASA calls this uplink arraying, and it was the original idea). Each LED blinks the same slow rhythm, and the light sensor adds up all the light it sees. When the blinks are <b>in sync</b>, the sensor swings hard. When two LEDs blink <b>exactly opposite</b>, the sensor sees steady light: both LEDs are clearly blinking, yet there is <b>zero signal</b>. In "auto-align", the Pico nudges each LED's timing until the swing is as big as possible. It's the same math as the dishes, at 1 Hz instead of gigahertz.`,
+  init(s) { s.mode = 'auto'; s.phi = [0, 2.6, -1.9]; s.on = [true, true, true]; s.buf = []; s.lp = 0; s.lastT = 0; s.autoStart = 0; },
+  actions: [
+    { label: 'in sync', on: s => s.mode === 'sync', run: s => { s.mode = 'sync'; s.phi = [0, 0, 0]; s.on = [true, true, true]; } },
+    { label: 'two opposite', on: s => s.mode === 'opp', run: s => { s.mode = 'opp'; s.phi = [0, Math.PI, 0]; s.on = [true, true, false]; } },
+    { label: 'scramble + auto-align', on: s => s.mode === 'auto', run: s => { s.mode = 'auto'; s.phi = [0, 2.6, -1.9]; s.on = [true, true, true]; s.autoStart = s.lastT; } }
+  ],
+  draw(t, s) {
+    const dt = clamp(t - s.lastT, 0, 0.05);
+    s.lastT = t;
+    const f = 1.0;
+    if (s.mode === 'auto') {
+      const ta = t - s.autoStart;
+      for (let i = 1; i < 3; i++) if (ta > 1.5 + (i - 1) * 2.5) s.phi[i] *= Math.exp(-dt * 1.6);
+    }
+    const lit = s.phi.map((p, i) => s.on[i] && Math.sin(2 * Math.PI * f * t + p) >= 0);
+    const total = lit.reduce((a2, v) => a2 + (v ? 1 : 0), 0);
+    s.lp += (total - s.lp) * (1 - Math.exp(-dt / 0.06));
+    s.buf.push([t, s.lp]);
+    while (s.buf.length && s.buf[0][0] < t - 4) s.buf.shift();
+
+    panel(20, 16, 440, 508, '');
+    const sx = 370, sy = 270;
+    for (let i = 0; i < 3; i++) {
+      const y = 120 + i * 150;
+      if (lit[i]) {
+        ctx.save(); ctx.globalAlpha = 0.18; ctx.fillStyle = C.red;
+        ctx.beginPath(); ctx.moveTo(140, y - 18); ctx.lineTo(sx - 14, sy - 6); ctx.lineTo(sx - 14, sy + 6); ctx.lineTo(140, y + 18); ctx.closePath(); ctx.fill();
+        ctx.restore();
+      }
+      ctx.save();
+      if (lit[i]) { ctx.shadowColor = C.red; ctx.shadowBlur = 28; }
+      ctx.beginPath(); ctx.arc(110, y, 24, 0, 2 * Math.PI);
+      ctx.fillStyle = !s.on[i] ? '#1f2937' : lit[i] ? '#ff5a5a' : '#4a1d1d'; ctx.fill();
+      ctx.restore();
+      ctx.beginPath(); ctx.arc(110, y, 24, 0, 2 * Math.PI); ctx.strokeStyle = '#7f1d1d'; ctx.lineWidth = 2; ctx.stroke();
+      let cyc = s.phi[i] / (2 * Math.PI);
+      cyc = ((cyc % 1) + 1.5) % 1 - 0.5;
+      text(`LED ${i + 1}`, 110, y + 44, { size: 12, align: 'center', color: C.dim });
+      text(s.on[i] ? `timing offset ${cyc >= 0 ? '+' : ''}${cyc.toFixed(2)} cycles` : 'off', 110, y + 60, { size: 11, align: 'center', color: s.on[i] ? C.text : C.dim });
+    }
+    ctx.beginPath(); ctx.arc(sx, sy, 16, 0, 2 * Math.PI); ctx.fillStyle = '#3f3f46'; ctx.fill(); ctx.strokeStyle = '#e4e4e7'; ctx.lineWidth = 2; ctx.stroke();
+    ctx.beginPath();
+    for (let k = 0; k <= 8; k++) { const px = sx - 9 + k * 2.25, py = sy + (k % 2 ? -5 : 5); if (k === 0) ctx.moveTo(px, py); else ctx.lineTo(px, py); }
+    ctx.strokeStyle = C.yellow; ctx.lineWidth = 1.6; ctx.stroke();
+    text('light sensor', sx, sy + 36, { size: 12, align: 'center', color: C.dim });
+    text('(photoresistor)', sx, sy + 52, { size: 11, align: 'center', color: C.dim });
+
+    panel(480, 16, 500, 330, 'what the light sensor reads (last 4 seconds)');
+    const px0 = 500, px1 = 960, py0 = 50, py1 = 320;
+    line(px0, py1, px1, py1, C.grid); line(px0, py0, px1, py0, C.grid, 1, [2, 4]);
+    text('3 LEDs', px1, py0 - 6, { size: 10, color: C.dim, align: 'right' });
+    text('0', px0 + 4, py1 - 6, { size: 10, color: C.dim });
+    ctx.beginPath();
+    s.buf.forEach(([bt, v], i) => {
+      const x = px1 - ((t - bt) / 4) * (px1 - px0), y = py1 - (v / 3) * (py1 - py0);
+      if (i === 0) ctx.moveTo(x, y); else ctx.lineTo(x, y);
+    });
+    ctx.strokeStyle = C.yellow; ctx.lineWidth = 2.5; ctx.stroke();
+
+    const recent = s.buf.filter(([bt]) => bt >= t - 1 / f).map(([, v]) => v);
+    const swing = recent.length ? Math.max(...recent) - Math.min(...recent) : 0;
+    const maxSwing = s.on.filter(Boolean).length;
+    panel(480, 358, 500, 166, 'swing = how strong the signal is');
+    rrect(500, 400, 460, 20, 10, '#1b2547');
+    rrect(500, 400, clamp(swing / 3, 0, 1) * 460, 20, 10, swing > 0.15 ? C.yellow : C.red);
+    text(`swing: ${swing.toFixed(2)} (max possible with ${maxSwing} LED${maxSwing === 1 ? '' : 's'}: ${maxSwing})`, 500, 446, { size: 14 });
+    const msg = s.mode === 'opp' ? 'both LEDs blink, but the sensor sees steady light: zero signal'
+      : s.mode === 'sync' ? 'all in sync: the blinks stack into one big swing'
+      : (t - s.autoStart) < 1.5 ? 'scrambled timings: the blinks partly cancel'
+      : 'the Pico nudges one LED at a time toward the biggest swing';
+    text(msg, 500, 474, { size: 13, color: C.dim });
+    text('aligned power grows like N\u00b2: 3 LEDs in sync = 9x one LED', 500, 500, { size: 12, color: C.dim });
+  }
+});
+
+resize();
+go(0);
+(function loop() {
+  ctx.fillStyle = C.bg; ctx.fillRect(0, 0, W, H);
+  scenes[cur].draw(sceneTime(), S);
+  if (paused) text('paused (press space)', W - 16, H - 8, { size: 12, color: C.dim, align: 'right' });
+  requestAnimationFrame(loop);
+})();
+</script>
+</body>
+</html>

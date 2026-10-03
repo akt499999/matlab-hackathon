@@ -1,0 +1,421 @@
+EsN0_dB,seed,receiver,correct_frames,frames,false_accepts
+-4,301,best single dish,0,50,0
+-4,301,equal gain,0,50,0
+-4,301,SUMPLE (blind consensus),0,50,0
+-4,301,sync-marker only,0,50,0
+-4,301,Choir (verified frames),0,50,0
+-4,301,bound: knows the data,0,50,0
+-2,301,best single dish,0,50,0
+-2,301,equal gain,23,50,0
+-2,301,SUMPLE (blind consensus),22,50,0
+-2,301,sync-marker only,14,50,0
+-2,301,Choir (verified frames),24,50,0
+-2,301,bound: knows the data,29,50,0
+0,301,best single dish,0,50,0
+0,301,equal gain,49,50,0
+0,301,SUMPLE (blind consensus),49,50,0
+0,301,sync-marker only,46,50,0
+0,301,Choir (verified frames),48,50,0
+0,301,bound: knows the data,50,50,0
+2,301,best single dish,0,50,0
+2,301,equal gain,50,50,0
+2,301,SUMPLE (blind consensus),50,50,0
+2,301,sync-marker only,50,50,0
+2,301,Choir (verified frames),50,50,0
+2,301,bound: knows the data,50,50,0
+4,301,best single dish,13,50,0
+4,301,equal gain,50,50,0
+4,301,SUMPLE (blind consensus),50,50,0
+4,301,sync-marker only,50,50,0
+4,301,Choir (verified frames),50,50,0
+4,301,bound: knows the data,50,50,0
+6,301,best single dish,42,50,0
+6,301,equal gain,50,50,0
+6,301,SUMPLE (blind consensus),50,50,0
+6,301,sync-marker only,50,50,0
+6,301,Choir (verified frames),50,50,0
+6,301,bound: knows the data,50,50,0
+8,301,best single dish,50,50,0
+8,301,equal gain,50,50,0
+8,301,SUMPLE (blind consensus),50,50,0
+8,301,sync-marker only,50,50,0
+8,301,Choir (verified frames),50,50,0
+8,301,bound: knows the data,50,50,0
+-4,302,best single dish,0,50,0
+-4,302,equal gain,0,50,0
+-4,302,SUMPLE (blind consensus),0,50,0
+-4,302,sync-marker only,0,50,0
+-4,302,Choir (verified frames),0,50,0
+-4,302,bound: knows the data,0,50,0
+-2,302,best single dish,0,50,0
+-2,302,equal gain,10,50,0
+-2,302,SUMPLE (blind consensus),10,50,0
+-2,302,sync-marker only,5,50,0
+-2,302,Choir (verified frames),10,50,0
+-2,302,bound: knows the data,12,50,0
+0,302,best single dish,0,50,0
+0,302,equal gain,47,50,0
+0,302,SUMPLE (blind consensus),47,50,0
+0,302,sync-marker only,45,50,0
+0,302,Choir (verified frames),47,50,0
+0,302,bound: knows the data,48,50,0
+2,302,best single dish,0,50,0
+2,302,equal gain,50,50,0
+2,302,SUMPLE (blind consensus),50,50,0
+2,302,sync-marker only,50,50,0
+2,302,Choir (verified frames),50,50,0
+2,302,bound: knows the data,50,50,0
+4,302,best single dish,0,50,0
+4,302,equal gain,50,50,0
+4,302,SUMPLE (blind consensus),50,50,0
+4,302,sync-marker only,50,50,0
+4,302,Choir (verified frames),50,50,0
+4,302,bound: knows the data,50,50,0
+6,302,best single dish,38,50,0
+6,302,equal gain,50,50,0
+6,302,SUMPLE (blind consensus),50,50,0
+6,302,sync-marker only,50,50,0
+6,302,Choir (verified frames),50,50,0
+6,302,bound: knows the data,50,50,0
+8,302,best single dish,50,50,0
+8,302,equal gain,50,50,0
+8,302,SUMPLE (blind consensus),50,50,0
+8,302,sync-marker only,50,50,0
+8,302,Choir (verified frames),50,50,0
+8,302,bound: knows the data,50,50,0
+-4,303,best single dish,0,50,0
+-4,303,equal gain,0,50,0
+-4,303,SUMPLE (blind consensus),0,50,0
+-4,303,sync-marker only,0,50,0
+-4,303,Choir (verified frames),0,50,0
+-4,303,bound: knows the data,0,50,0
+-2,303,best single dish,0,50,0
+-2,303,equal gain,1,50,0
+-2,303,SUMPLE (blind consensus),7,50,0
+-2,303,sync-marker only,1,50,0
+-2,303,Choir (verified frames),1,50,0
+-2,303,bound: knows the data,1,50,0
+0,303,best single dish,0,50,0
+0,303,equal gain,48,50,0
+0,303,SUMPLE (blind consensus),47,50,0
+0,303,sync-marker only,46,50,0
+0,303,Choir (verified frames),46,50,0
+0,303,bound: knows the data,47,50,0
+2,303,best single dish,0,50,0
+2,303,equal gain,50,50,0
+2,303,SUMPLE (blind consensus),50,50,0
+2,303,sync-marker only,50,50,0
+2,303,Choir (verified frames),50,50,0
+2,303,bound: knows the data,50,50,0
+4,303,best single dish,0,50,0
+4,303,equal gain,50,50,0
+4,303,SUMPLE (blind consensus),50,50,0
+4,303,sync-marker only,50,50,0
+4,303,Choir (verified frames),50,50,0
+4,303,bound: knows the data,50,50,0
+6,303,best single dish,31,50,0
+6,303,equal gain,50,50,0
+6,303,SUMPLE (blind consensus),50,50,0
+6,303,sync-marker only,50,50,0
+6,303,Choir (verified frames),50,50,0
+6,303,bound: knows the data,50,50,0
+8,303,best single dish,50,50,0
+8,303,equal gain,50,50,0
+8,303,SUMPLE (blind consensus),50,50,0
+8,303,sync-marker only,50,50,0
+8,303,Choir (verified frames),50,50,0
+8,303,bound: knows the data,50,50,0
+-4,304,best single dish,0,50,0
+-4,304,equal gain,0,50,0
+-4,304,SUMPLE (blind consensus),0,50,0
+-4,304,sync-marker only,0,50,0
+-4,304,Choir (verified frames),0,50,0
+-4,304,bound: knows the data,0,50,0
+-2,304,best single dish,0,50,0
+-2,304,equal gain,27,50,0
+-2,304,SUMPLE (blind consensus),26,50,0
+-2,304,sync-marker only,19,50,0
+-2,304,Choir (verified frames),22,50,0
+-2,304,bound: knows the data,22,50,0
+0,304,best single dish,0,50,0
+0,304,equal gain,47,50,0
+0,304,SUMPLE (blind consensus),50,50,0
+0,304,sync-marker only,49,50,0
+0,304,Choir (verified frames),50,50,0
+0,304,bound: knows the data,50,50,0
+2,304,best single dish,0,50,0
+2,304,equal gain,50,50,0
+2,304,SUMPLE (blind consensus),50,50,0
+2,304,sync-marker only,50,50,0
+2,304,Choir (verified frames),50,50,0
+2,304,bound: knows the data,50,50,0
+4,304,best single dish,12,50,0
+4,304,equal gain,50,50,0
+4,304,SUMPLE (blind consensus),50,50,0
+4,304,sync-marker only,50,50,0
+4,304,Choir (verified frames),50,50,0
+4,304,bound: knows the data,50,50,0
+6,304,best single dish,45,50,0
+6,304,equal gain,50,50,0
+6,304,SUMPLE (blind consensus),50,50,0
+6,304,sync-marker only,50,50,0
+6,304,Choir (verified frames),50,50,0
+6,304,bound: knows the data,50,50,0
+8,304,best single dish,50,50,0
+8,304,equal gain,50,50,0
+8,304,SUMPLE (blind consensus),50,50,0
+8,304,sync-marker only,50,50,0
+8,304,Choir (verified frames),50,50,0
+8,304,bound: knows the data,50,50,0
+-4,305,best single dish,0,50,0
+-4,305,equal gain,0,50,0
+-4,305,SUMPLE (blind consensus),0,50,0
+-4,305,sync-marker only,0,50,0
+-4,305,Choir (verified frames),0,50,0
+-4,305,bound: knows the data,0,50,0
+-2,305,best single dish,0,50,0
+-2,305,equal gain,16,50,0
+-2,305,SUMPLE (blind consensus),15,50,0
+-2,305,sync-marker only,7,50,0
+-2,305,Choir (verified frames),15,50,0
+-2,305,bound: knows the data,20,50,0
+0,305,best single dish,0,50,0
+0,305,equal gain,48,50,0
+0,305,SUMPLE (blind consensus),49,50,0
+0,305,sync-marker only,48,50,0
+0,305,Choir (verified frames),49,50,0
+0,305,bound: knows the data,50,50,0
+2,305,best single dish,0,50,0
+2,305,equal gain,50,50,0
+2,305,SUMPLE (blind consensus),50,50,0
+2,305,sync-marker only,50,50,0
+2,305,Choir (verified frames),50,50,0
+2,305,bound: knows the data,50,50,0
+4,305,best single dish,18,50,0
+4,305,equal gain,50,50,0
+4,305,SUMPLE (blind consensus),50,50,0
+4,305,sync-marker only,50,50,0
+4,305,Choir (verified frames),50,50,0
+4,305,bound: knows the data,50,50,0
+6,305,best single dish,46,50,0
+6,305,equal gain,50,50,0
+6,305,SUMPLE (blind consensus),50,50,0
+6,305,sync-marker only,50,50,0
+6,305,Choir (verified frames),50,50,0
+6,305,bound: knows the data,50,50,0
+8,305,best single dish,50,50,0
+8,305,equal gain,50,50,0
+8,305,SUMPLE (blind consensus),50,50,0
+8,305,sync-marker only,50,50,0
+8,305,Choir (verified frames),50,50,0
+8,305,bound: knows the data,50,50,0
+-4,306,best single dish,0,50,0
+-4,306,equal gain,0,50,0
+-4,306,SUMPLE (blind consensus),0,50,0
+-4,306,sync-marker only,0,50,0
+-4,306,Choir (verified frames),0,50,0
+-4,306,bound: knows the data,0,50,0
+-2,306,best single dish,0,50,0
+-2,306,equal gain,39,50,0
+-2,306,SUMPLE (blind consensus),33,50,0
+-2,306,sync-marker only,26,50,0
+-2,306,Choir (verified frames),28,50,0
+-2,306,bound: knows the data,34,50,0
+0,306,best single dish,0,50,0
+0,306,equal gain,48,50,0
+0,306,SUMPLE (blind consensus),48,50,0
+0,306,sync-marker only,44,50,0
+0,306,Choir (verified frames),48,50,0
+0,306,bound: knows the data,49,50,0
+2,306,best single dish,0,50,0
+2,306,equal gain,50,50,0
+2,306,SUMPLE (blind consensus),50,50,0
+2,306,sync-marker only,50,50,0
+2,306,Choir (verified frames),50,50,0
+2,306,bound: knows the data,50,50,0
+4,306,best single dish,16,50,0
+4,306,equal gain,50,50,0
+4,306,SUMPLE (blind consensus),50,50,0
+4,306,sync-marker only,50,50,0
+4,306,Choir (verified frames),50,50,0
+4,306,bound: knows the data,50,50,0
+6,306,best single dish,46,50,0
+6,306,equal gain,50,50,0
+6,306,SUMPLE (blind consensus),50,50,0
+6,306,sync-marker only,50,50,0
+6,306,Choir (verified frames),50,50,0
+6,306,bound: knows the data,50,50,0
+8,306,best single dish,50,50,0
+8,306,equal gain,50,50,0
+8,306,SUMPLE (blind consensus),50,50,0
+8,306,sync-marker only,50,50,0
+8,306,Choir (verified frames),50,50,0
+8,306,bound: knows the data,50,50,0
+-4,307,best single dish,0,50,0
+-4,307,equal gain,0,50,0
+-4,307,SUMPLE (blind consensus),0,50,0
+-4,307,sync-marker only,0,50,0
+-4,307,Choir (verified frames),0,50,0
+-4,307,bound: knows the data,0,50,0
+-2,307,best single dish,0,50,0
+-2,307,equal gain,2,50,0
+-2,307,SUMPLE (blind consensus),2,50,0
+-2,307,sync-marker only,1,50,0
+-2,307,Choir (verified frames),2,50,0
+-2,307,bound: knows the data,2,50,0
+0,307,best single dish,0,50,0
+0,307,equal gain,47,50,0
+0,307,SUMPLE (blind consensus),47,50,0
+0,307,sync-marker only,41,50,0
+0,307,Choir (verified frames),46,50,0
+0,307,bound: knows the data,47,50,0
+2,307,best single dish,0,50,0
+2,307,equal gain,50,50,0
+2,307,SUMPLE (blind consensus),50,50,0
+2,307,sync-marker only,50,50,0
+2,307,Choir (verified frames),50,50,0
+2,307,bound: knows the data,50,50,0
+4,307,best single dish,6,50,0
+4,307,equal gain,50,50,0
+4,307,SUMPLE (blind consensus),50,50,0
+4,307,sync-marker only,50,50,0
+4,307,Choir (verified frames),50,50,0
+4,307,bound: knows the data,50,50,0
+6,307,best single dish,41,50,0
+6,307,equal gain,50,50,0
+6,307,SUMPLE (blind consensus),50,50,0
+6,307,sync-marker only,50,50,0
+6,307,Choir (verified frames),50,50,0
+6,307,bound: knows the data,50,50,0
+8,307,best single dish,50,50,0
+8,307,equal gain,50,50,0
+8,307,SUMPLE (blind consensus),50,50,0
+8,307,sync-marker only,50,50,0
+8,307,Choir (verified frames),50,50,0
+8,307,bound: knows the data,50,50,0
+-4,308,best single dish,0,50,0
+-4,308,equal gain,0,50,0
+-4,308,SUMPLE (blind consensus),0,50,0
+-4,308,sync-marker only,0,50,0
+-4,308,Choir (verified frames),0,50,0
+-4,308,bound: knows the data,0,50,0
+-2,308,best single dish,0,50,0
+-2,308,equal gain,0,50,0
+-2,308,SUMPLE (blind consensus),0,50,0
+-2,308,sync-marker only,0,50,0
+-2,308,Choir (verified frames),0,50,0
+-2,308,bound: knows the data,0,50,0
+0,308,best single dish,0,50,0
+0,308,equal gain,39,50,0
+0,308,SUMPLE (blind consensus),41,50,0
+0,308,sync-marker only,29,50,0
+0,308,Choir (verified frames),38,50,0
+0,308,bound: knows the data,41,50,0
+2,308,best single dish,0,50,0
+2,308,equal gain,50,50,0
+2,308,SUMPLE (blind consensus),50,50,0
+2,308,sync-marker only,50,50,0
+2,308,Choir (verified frames),50,50,0
+2,308,bound: knows the data,50,50,0
+4,308,best single dish,0,50,0
+4,308,equal gain,50,50,0
+4,308,SUMPLE (blind consensus),50,50,0
+4,308,sync-marker only,50,50,0
+4,308,Choir (verified frames),50,50,0
+4,308,bound: knows the data,50,50,0
+6,308,best single dish,29,50,0
+6,308,equal gain,50,50,0
+6,308,SUMPLE (blind consensus),50,50,0
+6,308,sync-marker only,50,50,0
+6,308,Choir (verified frames),50,50,0
+6,308,bound: knows the data,50,50,0
+8,308,best single dish,49,50,0
+8,308,equal gain,50,50,0
+8,308,SUMPLE (blind consensus),50,50,0
+8,308,sync-marker only,50,50,0
+8,308,Choir (verified frames),50,50,0
+8,308,bound: knows the data,50,50,0
+-4,309,best single dish,0,50,0
+-4,309,equal gain,0,50,0
+-4,309,SUMPLE (blind consensus),0,50,0
+-4,309,sync-marker only,0,50,0
+-4,309,Choir (verified frames),0,50,0
+-4,309,bound: knows the data,0,50,0
+-2,309,best single dish,0,50,0
+-2,309,equal gain,11,50,0
+-2,309,SUMPLE (blind consensus),17,50,0
+-2,309,sync-marker only,2,50,0
+-2,309,Choir (verified frames),14,50,0
+-2,309,bound: knows the data,19,50,0
+0,309,best single dish,0,50,0
+0,309,equal gain,47,50,0
+0,309,SUMPLE (blind consensus),48,50,0
+0,309,sync-marker only,46,50,0
+0,309,Choir (verified frames),46,50,0
+0,309,bound: knows the data,48,50,0
+2,309,best single dish,0,50,0
+2,309,equal gain,50,50,0
+2,309,SUMPLE (blind consensus),50,50,0
+2,309,sync-marker only,50,50,0
+2,309,Choir (verified frames),50,50,0
+2,309,bound: knows the data,50,50,0
+4,309,best single dish,0,50,0
+4,309,equal gain,50,50,0
+4,309,SUMPLE (blind consensus),50,50,0
+4,309,sync-marker only,50,50,0
+4,309,Choir (verified frames),50,50,0
+4,309,bound: knows the data,50,50,0
+6,309,best single dish,30,50,0
+6,309,equal gain,50,50,0
+6,309,SUMPLE (blind consensus),50,50,0
+6,309,sync-marker only,50,50,0
+6,309,Choir (verified frames),50,50,0
+6,309,bound: knows the data,50,50,0
+8,309,best single dish,49,50,0
+8,309,equal gain,50,50,0
+8,309,SUMPLE (blind consensus),50,50,0
+8,309,sync-marker only,50,50,0
+8,309,Choir (verified frames),50,50,0
+8,309,bound: knows the data,50,50,0
+-4,310,best single dish,0,50,0
+-4,310,equal gain,0,50,0
+-4,310,SUMPLE (blind consensus),0,50,0
+-4,310,sync-marker only,0,50,0
+-4,310,Choir (verified frames),0,50,0
+-4,310,bound: knows the data,0,50,0
+-2,310,best single dish,0,50,0
+-2,310,equal gain,27,50,0
+-2,310,SUMPLE (blind consensus),31,50,0
+-2,310,sync-marker only,23,50,0
+-2,310,Choir (verified frames),23,50,0
+-2,310,bound: knows the data,27,50,0
+0,310,best single dish,0,50,0
+0,310,equal gain,50,50,0
+0,310,SUMPLE (blind consensus),50,50,0
+0,310,sync-marker only,50,50,0
+0,310,Choir (verified frames),50,50,0
+0,310,bound: knows the data,50,50,0
+2,310,best single dish,0,50,0
+2,310,equal gain,50,50,0
+2,310,SUMPLE (blind consensus),50,50,0
+2,310,sync-marker only,50,50,0
+2,310,Choir (verified frames),50,50,0
+2,310,bound: knows the data,50,50,0
+4,310,best single dish,11,50,0
+4,310,equal gain,50,50,0
+4,310,SUMPLE (blind consensus),50,50,0
+4,310,sync-marker only,50,50,0
+4,310,Choir (verified frames),50,50,0
+4,310,bound: knows the data,50,50,0
+6,310,best single dish,46,50,0
+6,310,equal gain,50,50,0
+6,310,SUMPLE (blind consensus),50,50,0
+6,310,sync-marker only,50,50,0
+6,310,Choir (verified frames),50,50,0
+6,310,bound: knows the data,50,50,0
+8,310,best single dish,50,50,0
+8,310,equal gain,50,50,0
+8,310,SUMPLE (blind consensus),50,50,0
+8,310,sync-marker only,50,50,0
+8,310,Choir (verified frames),50,50,0
+8,310,bound: knows the data,50,50,0

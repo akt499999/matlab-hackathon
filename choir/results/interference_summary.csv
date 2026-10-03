@@ -1,0 +1,85 @@
+interferer,inr_dB,receiver,GroupCount,sum_correct_frames,sum_frames,sum_false_accepts,success_pct
+lookalike,-10,Choir (verified frames),10,399,400,0,99.75
+lookalike,-10,SUMPLE (blind consensus),10,398,400,0,99.5
+lookalike,-10,best single dish,10,0,400,0,0
+lookalike,-10,bound: knows the data,10,400,400,0,100
+lookalike,-10,equal gain,10,400,400,0,100
+lookalike,-10,sync-marker only,10,393,400,0,98.25
+lookalike,-5,Choir (verified frames),10,383,400,0,95.75
+lookalike,-5,SUMPLE (blind consensus),10,347,400,0,86.75
+lookalike,-5,best single dish,10,0,400,0,0
+lookalike,-5,bound: knows the data,10,395,400,0,98.75
+lookalike,-5,equal gain,10,381,400,0,95.25
+lookalike,-5,sync-marker only,10,377,400,0,94.25
+lookalike,0,Choir (verified frames),10,357,400,0,89.25
+lookalike,0,SUMPLE (blind consensus),10,44,400,0,11
+lookalike,0,best single dish,10,0,400,0,0
+lookalike,0,bound: knows the data,10,363,400,0,90.75
+lookalike,0,equal gain,10,270,400,0,67.5
+lookalike,0,sync-marker only,10,355,400,0,88.75
+lookalike,5,Choir (verified frames),10,354,400,0,88.5
+lookalike,5,SUMPLE (blind consensus),10,3,400,0,0.75
+lookalike,5,best single dish,10,0,400,0,0
+lookalike,5,bound: knows the data,10,362,400,0,90.5
+lookalike,5,equal gain,10,52,400,0,13
+lookalike,5,sync-marker only,10,351,400,0,87.75
+lookalike,10,Choir (verified frames),10,354,400,0,88.5
+lookalike,10,SUMPLE (blind consensus),10,0,400,0,0
+lookalike,10,best single dish,10,0,400,0,0
+lookalike,10,bound: knows the data,10,361,400,0,90.25
+lookalike,10,equal gain,10,0,400,0,0
+lookalike,10,sync-marker only,10,340,400,0,85
+lookalike,15,Choir (verified frames),10,350,400,0,87.5
+lookalike,15,SUMPLE (blind consensus),10,0,400,0,0
+lookalike,15,best single dish,10,0,400,0,0
+lookalike,15,bound: knows the data,10,359,400,0,89.75
+lookalike,15,equal gain,10,0,400,0,0
+lookalike,15,sync-marker only,10,171,400,0,42.75
+lookalike,20,Choir (verified frames),10,351,400,0,87.75
+lookalike,20,SUMPLE (blind consensus),10,0,400,0,0
+lookalike,20,best single dish,10,0,400,0,0
+lookalike,20,bound: knows the data,10,359,400,0,89.75
+lookalike,20,equal gain,10,0,400,0,0
+lookalike,20,sync-marker only,10,29,400,0,7.25
+wideband,-10,Choir (verified frames),10,399,400,0,99.75
+wideband,-10,SUMPLE (blind consensus),10,400,400,0,100
+wideband,-10,best single dish,10,0,400,0,0
+wideband,-10,bound: knows the data,10,400,400,0,100
+wideband,-10,equal gain,10,400,400,0,100
+wideband,-10,sync-marker only,10,400,400,0,100
+wideband,-5,Choir (verified frames),10,399,400,0,99.75
+wideband,-5,SUMPLE (blind consensus),10,399,400,0,99.75
+wideband,-5,best single dish,10,0,400,0,0
+wideband,-5,bound: knows the data,10,400,400,0,100
+wideband,-5,equal gain,10,399,400,0,99.75
+wideband,-5,sync-marker only,10,399,400,0,99.75
+wideband,0,Choir (verified frames),10,399,400,0,99.75
+wideband,0,SUMPLE (blind consensus),10,363,400,0,90.75
+wideband,0,best single dish,10,0,400,0,0
+wideband,0,bound: knows the data,10,400,400,0,100
+wideband,0,equal gain,10,387,400,0,96.75
+wideband,0,sync-marker only,10,395,400,0,98.75
+wideband,5,Choir (verified frames),10,399,400,0,99.75
+wideband,5,SUMPLE (blind consensus),10,78,400,0,19.5
+wideband,5,best single dish,10,0,400,0,0
+wideband,5,bound: knows the data,10,399,400,0,99.75
+wideband,5,equal gain,10,270,400,0,67.5
+wideband,5,sync-marker only,10,396,400,0,99
+wideband,10,Choir (verified frames),10,399,400,0,99.75
+wideband,10,SUMPLE (blind consensus),10,3,400,0,0.75
+wideband,10,best single dish,10,0,400,0,0
+wideband,10,bound: knows the data,10,399,400,0,99.75
+wideband,10,equal gain,10,60,400,0,15
+wideband,10,sync-marker only,10,394,400,0,98.5
+wideband,15,Choir (verified frames),10,395,400,0,98.75
+wideband,15,SUMPLE (blind consensus),10,0,400,0,0
+wideband,15,best single dish,10,0,400,0,0
+wideband,15,bound: knows the data,10,399,400,0,99.75
+wideband,15,equal gain,10,4,400,0,1
+wideband,15,sync-marker only,10,389,400,0,97.25
+wideband,20,Choir (verified frames),10,393,400,0,98.25
+wideband,20,SUMPLE (blind consensus),10,0,400,0,0
+wideband,20,best single dish,10,0,400,0,0
+wideband,20,bound: knows the data,10,399,400,0,99.75
+wideband,20,equal gain,10,0,400,0,0
+wideband,20,sync-marker only,10,288,400,0,72
