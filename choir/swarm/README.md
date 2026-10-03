@@ -1,11 +1,13 @@
-# Swarm receivers: shared search for the channel settings
+# Swarm receivers: find the best settings for a message and a noise level
 
 This is an add-on to Choir.
-- **What it does:** it sends a typed message as BPSK through a channel with user-selected noise and impairments. Several receivers start from different settings and share results. Together they find the carrier frequency, phase, timing, and gain that decode the message.
+- **What it does:** you type a message and a noise level. The program finds the best receiver settings (carrier frequency, phase, timing, and gain) for that noise level by itself, and prints them with the decoded message.
+- **How:** several receivers that know the message each try different settings and share results. Each round they move toward the best receiver's settings, until they reach the lowest error possible at that noise level.
+- **Run it:** `choir\swarm\swarm.bat` from a terminal, or `swarm_receivers` in MATLAB.
 
 ```matlab
-swarm_receivers                                    % asks for each setting (Enter keeps the default)
-swarm_receivers('HELLO MARS', 8, 40, 30, 0.3, 8)   % message, Es/N0 dB, freq offset Hz, phase deg, timing (fraction of a symbol), receivers
+swarm_receivers                                    % asks for a message and a noise level, then finds the best settings
+swarm_receivers('HELLO MARS', 8)                   % same, without the questions
 ```
 
 - **Requirements:** MATLAB R2026b, no toolboxes.
@@ -14,8 +16,7 @@ swarm_receivers('HELLO MARS', 8, 40, 30, 0.3, 8)   % message, Es/N0 dB, freq off
 ## Procedure in the program
 
 1. **Transmitter:** message, then bits, then BPSK, then root-raised-cosine pulse shaping.
-2. **Channel:** the user settings, which the receivers do not get:
-   - noise at the selected Es/N0
+2. **Channel:** noise at your chosen level, plus the distortions a real link adds, which the receivers must undo (picked at random each run):
    - a carrier frequency offset
    - a phase offset
    - a timing offset
