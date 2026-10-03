@@ -1,0 +1,30 @@
+# Python virtual environment
+.venv/
+venv/
+env/
+__pycache__/
+*.pyc
+
+# Editor settings
+.vscode/
+.idea/
+
+# Datasets (too big for GitHub; download links go in the README)
+res/*
+!res/.gitkeep
+*.pkl
+*.hdf5
+*.h5
+
+# MATLAB temporary files
+*.asv
+*.autosave
+*.mex*
+slprj/
+codegen/
+*.slxc
+
+# OS files
+.DS_Store
+Thumbs.db
+desktop.ini
