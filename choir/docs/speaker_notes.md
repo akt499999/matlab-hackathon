@@ -10,7 +10,7 @@ These notes are for `slides.pdf` (12 slides). The talk is 5 minutes, so each sli
 
 **2. Project parts.**
 - Track 1 asks for a pipeline that finds, cleans, and decodes weak signals with no human tuning.
-- The project has a MATLAB receiver, a breadboard demo with 3 LEDs, and a swarm add-on.
+- The project has a MATLAB receiver and a breadboard demo with 3 LEDs.
 
 **3. One dish against eight.**
 - One dish needs approximately 8 dB to decode a frame.
@@ -53,10 +53,6 @@ These notes are for `slides.pdf` (12 slides). The talk is 5 minutes, so each sli
 - In one geometry, the look-alike arrived with a pattern similar to the spacecraft (similarity 0.81). All receivers failed, including the bound.
 - Without interference and at −2 dB, SUMPLE was slightly better.
 - The radio link is simulated, and the frames are uncoded.
-
-**12. Swarm add-on.**
-- Several receivers find the carrier frequency, phase, timing, and gain together. They use a known training message.
-- In three reported runs, the frequency error was 0.6 Hz or less.
 
 ## Answers to possible questions
 

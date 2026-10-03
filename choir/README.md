@@ -16,6 +16,5 @@ The code reads real NASA MSL telemetry from `res/` (see the Data section of the 
 | `tests/` | Checks for the results |
 | `results/` | CSV files, decision and telemetry logs, figures |
 | `simulink/` | The same receiver in Simulink |
-| `swarm/` | Add-on: swarm receivers that find the channel settings together |
 | `deck/` | Slide sources (each number on the slides comes from `numbers.json`) |
 | `docs/` | `slides.pdf`, `speaker_notes.md`, and the animated explainer |

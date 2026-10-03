@@ -148,11 +148,6 @@ The hidden carrier hop was +1363 Hz. With the initial offset (40 Hz) and the dri
   - A Level-2 MATLAB S-Function runs the same receiver code (`rx_step`) one frame per simulation step.
   - For seed 301, it delivered 275 of 300 frames, the same as the MATLAB run.
   - To run it, use `build_choir_sim`, then `run_choir_sim`.
-- **Swarm receivers** (`choir/swarm/`, add-on).
-  - Several receivers find the carrier frequency, phase, timing, and gain together with a particle swarm method. They use a known training message.
-  - In three reported runs, the error in each carrier offset was 0.6 Hz or less.
-  - Two messages had 0 bit errors. The third message, at 4 dB, had 3 of 160 bits wrong, which is near the BPSK noise limit.
-  - It runs in MATLAB with no toolboxes; see `choir/swarm/README.md`.
 - **Hardware demo** (shown live, Raspberry Pi Pico).
   - Three LEDs send the same Morse frame, in sequence, to one photoresistor. The frame has a sync pulse, ID C, a counter, the payload MATLAB, and a checksum.
   - In each round, a hidden fault changes the light from one LED (flicker), changes the payload of one LED, or sends a look-alike frame (ID Q) on 2 of 3 LEDs.
@@ -161,7 +156,7 @@ The hidden carrier hop was +1363 Hz. With the initial offset (40 Hz) and the dri
   - Light intensities add, so this demo shows the acceptance rule, not radio combining.
 - **Slides and explainer.**
   - The slides are `choir/docs/slides.pdf`, and the speaker notes are `choir/docs/speaker_notes.md`.
-  - The images on the slides are MATLAB outputs: MATLAB figures from `choir/results/figures/`, a MATLAB table of the decision log, the Simulink model and scope signals, and the swarm figure.
+  - The images on the slides are MATLAB outputs: MATLAB figures from `choir/results/figures/`, a MATLAB table of the decision log, and the Simulink model and scope signals.
   - Each number on the slides comes from `choir/deck/numbers.json`, which `choir/deck/make_figs.m` calculates from the results files.
   - `choir/docs/choir-explainer.html` is an animated explainer. Its visuals are illustrations.
 
@@ -259,7 +254,6 @@ choir/
 ├── tests/run_tests.m      checks for the results
 ├── results/               CSV files, decision and telemetry logs, figures
 ├── simulink/              the same receiver in Simulink
-├── swarm/                 add-on: swarm receivers that find the channel settings together
 ├── deck/                  slide sources: make_figs.m, numbers.json, deck.html, figures
 ├── docs/                  slides.pdf, speaker_notes.md, choir-explainer.html
 └── res/                   telemanom data (not in Git)

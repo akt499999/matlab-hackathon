@@ -70,7 +70,6 @@ table.data { position: absolute; top: var(--fig-top); left: calc(var(--mx) - 8pt
       <tr><td>Track 1 task</td><td>Find, clean, and decode weak radio signals with no human tuning</td><td>Required: filter, acquire or re-acquire, decoded telemetry, before/after spectra</td></tr>
       <tr class="tight"><td>Software: Choir<span class="sub">MATLAB R2026b</span></td><td>Real NASA Curiosity (MSL) telemetry in CCSDS frames goes to 8 simulated dishes with hidden faults. The dish weights come only from frames with a correct CRC, the correct spacecraft ID, and the next frame count<span class="sub">The telemetry is real. The radio link is simulated. No benchmark radio clips are used</span></td><td>Measured results on slides 3 to 9</td></tr>
       <tr><td>Hardware: Choir on a breadboard<span class="sub">Raspberry Pi Pico</span></td><td>3 LEDs send the same Morse frame (sync, ID C, counter, MATLAB, checksum) in sequence to one photoresistor. In each round, a hidden fault adds flicker to one LED, changes its payload, or sends a look-alike frame on 2 of 3 LEDs</td><td>Live: raw and filtered light signal, majority vote and Choir checks, decoded message in the terminal</td></tr>
-      <tr><td>Choir swarm<span class="sub">add-on</span></td><td>Several receivers find the carrier frequency, phase, timing, and gain together (particle swarm). They use a known training message</td><td>Slide 12</td></tr>
     </tbody>
   </table>
   <footer class="foot"><span>Track text: MATLAB in Space Devpost page. Hardware: Pico code (MicroPython) and a laptop display program</span><span class="n"></span></footer>
@@ -172,18 +171,6 @@ table.data { position: absolute; top: var(--fig-top); left: calc(var(--mx) - 8pt
     </tbody>
   </table>
   <footer class="foot"><span>Similarity = |a<sup>H</sup>b| / (‖a‖‖b‖) of the two signals across the 8 dishes. Data: results/interference_runs.csv. Script: deck/make_figs.m</span><span class="n"></span></footer>
-</section>
-
-<section class="slide">
-  <h2>The swarm receivers found each carrier offset within 0.6&nbsp;Hz and decoded two of three test messages with 0 bit errors</h2>
-  <figure class="fig"><img src="../swarm/results/swarm_convergence.png" alt="MATLAB figure: swarm error, frequency, phase and timing per round, and symbols before and after" style="height:5.2in"></figure>
-  <aside class="side" style="left:calc(var(--mx) + 7.5in)">
-    <div class="stat"><b>39.5&nbsp;Hz</b><span>found for a 40&nbsp;Hz offset; HELLO FROM MARS, 8&nbsp;dB: 0 bit errors</span></div>
-    <div class="stat"><b>99.7&nbsp;Hz</b><span>found for a 100&nbsp;Hz offset; HI TEAM, 6&nbsp;dB: 0 bit errors</span></div>
-    <div class="stat"><b>−179.4&nbsp;Hz</b><span>found for a −180&nbsp;Hz offset; 4&nbsp;dB: 3 of 160 bits wrong (BPSK theory: approximately 2)</span></div>
-    <p class="note">The figure shows one other run (results/swarm_log.csv). The three values are the runs in the swarm README.</p>
-  </aside>
-  <footer class="foot"><span>Add-on: choir/swarm/swarm_receivers.m (MATLAB, particle swarm for frequency, phase, timing, and gain). The receivers know the message (training sequence). Figure: choir/swarm/results/swarm_convergence.png</span><span class="n"></span></footer>
 </section>
 
 <script>
