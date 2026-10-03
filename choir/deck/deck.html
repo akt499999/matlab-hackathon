@@ -63,6 +63,22 @@ table.data { position: absolute; top: var(--fig-top); left: calc(var(--mx) - 8pt
 </section>
 
 <section class="slide">
+  <h2>One idea, built twice: an 8-dish MATLAB receiver and a 3-LED breadboard that both trust what decodes</h2>
+  <table class="data">
+    <thead>
+      <tr><th>Part</th><th>What we built</th><th>What it shows</th></tr>
+    </thead>
+    <tbody>
+      <tr><td>Track 1 brief</td><td>Find, clean and decode weak radio signals with no human tuning</td><td>Asked for: filter, acquire or re-acquire, decoded telemetry, before/after spectra</td></tr>
+      <tr class="tight"><td>Software: Choir<span class="sub">MATLAB R2026b</span></td><td>Real NASA Curiosity (MSL) telemetry in CCSDS frames, sent to 8 simulated dishes with hidden faults. Dish weights are learned only from frames that pass the CRC, carry our spacecraft ID and continue the frame count<span class="sub">Telemetry is real; the radio link is simulated (no benchmark radio clips used)</span></td><td>Measured results on the next slides</td></tr>
+      <tr><td>Hardware: Choir on a breadboard<span class="sub">Raspberry Pi Pico</span></td><td>3 LEDs take turns sending the same Morse frame (sync, ID C, counter, MATLAB, checksum) to one photoresistor. Each round a hidden fault garbles one LED, corrupts its payload, or puts a look-alike frame on 2 of 3</td><td>Live: raw vs filtered light signal, majority vote vs Choir's checks, decoded message in the terminal</td></tr>
+      <tr><td>Choir swarm<span class="sub">teammate</span></td><td>Several spacecraft relay the same signal to one dish</td><td>Last slide</td></tr>
+    </tbody>
+  </table>
+  <footer class="foot"><span>Track text: MATLAB in Space Devpost page. Hardware code: main.py (Pico, MicroPython) and morse_gui.py (laptop view)</span><span class="n"></span></footer>
+</section>
+
+<section class="slide">
   <h2>One dish needs about 8&nbsp;dB to decode a frame; eight dishes decode every frame at <span class="v1 nw">2&nbsp;dB</span> each</h2>
   <figure class="fig"><img src="figs/snr.svg" alt="Frames delivered vs mean Es/N0 per dish, single dish vs 8-dish receivers"></figure>
   <aside class="side">
@@ -132,11 +148,18 @@ table.data { position: absolute; top: var(--fig-top); left: calc(var(--mx) - 8pt
 </section>
 
 <section class="slide">
-  <h2>[TODO: hardware demo headline with its number, e.g. what the LED link recovers from]</h2>
-  <div class="todo">Placeholder for the team's PCB/LED demo slide (to be finalized).<br><br>
-    LED sends a Morse message; a photoresistor receiver decodes it to the terminal and plots loss and recovery.<br><br>
-    Say on the slide: this illustrates detect, decode, lose and recover in light. Light adds as brightness, so it does not demonstrate Choir's radio combining.</div>
-  <footer class="foot"><span>[TODO: hardware, board, script name]</span><span class="n"></span></footer>
+  <h2>The same receiver also runs inside Simulink, one frame per step, and delivers 275 of 300 frames as in MATLAB</h2>
+  <figure class="fig"><img src="figs/simulink.png" alt="Simulink model outputs" style="height:5.2in"></figure>
+  <footer class="foot"><span>choir/simulink: Level-2 MATLAB S-Function stepping src/rx_step.m; seed 301, 300 frames. Matches results/faults_raw.mat</span><span class="n"></span></footer>
+</section>
+
+<section class="slide">
+  <h2>[TODO: hardware headline with its measured number, e.g. Choir n/N rounds correct vs majority vote m/N]</h2>
+  <div class="todo">Placeholder for the team's hardware demo slide (to be finalized).<br><br>
+    Choir on a breadboard (main.py on a Raspberry Pi Pico): 3 LEDs take turns sending the same Morse frame (sync, ID C, counter, MATLAB, checksum) to one photoresistor. Each round a hidden fault hits some LEDs: noisy, corrupted payload, or a look-alike frame (ID Q, DECOY) on 2 of 3. Majority vote trusts what the LEDs agree on; Choir trusts only frames that pass the checksum, carry ID C and move the counter forward. The truth is revealed only after both decide.<br><br>
+    Evidence to put here: the morse_gui.py screenshot (raw vs filtered signal, per-LED checks) and its scoreboard numbers (Majority n/N, Choir n/N, false accepts).<br><br>
+    Keep on the slide: light adds as brightness, so this shows the trust rule and recovery, not Choir's radio combining.</div>
+  <footer class="foot"><span>[TODO: number of rounds, faults seen, main.py and morse_gui.py]</span><span class="n"></span></footer>
 </section>
 
 <section class="slide">
@@ -156,9 +179,10 @@ table.data { position: absolute; top: var(--fig-top); left: calc(var(--mx) - 8pt
 </section>
 
 <section class="slide">
-  <h2>The same receiver also runs inside Simulink, one frame per step, and delivers 275 of 300 frames as in MATLAB</h2>
-  <figure class="fig"><img src="figs/simulink.png" alt="Simulink model outputs" style="height:5.2in"></figure>
-  <footer class="foot"><span>Backup. choir/simulink: Level-2 MATLAB S-Function stepping src/rx_step.m; seed 301, 300 frames. Matches results/faults_raw.mat</span><span class="n"></span></footer>
+  <h2>[TODO: Choir swarm headline with its number (teammate's slide)]</h2>
+  <div class="todo">Placeholder for the teammate's Choir swarm slide (to be finalized by them).<br><br>
+    From the idea notes: several spacecraft relay the same signal, and the dish receives it.</div>
+  <footer class="foot"><span>[TODO: data source and script name]</span><span class="n"></span></footer>
 </section>
 
 <script>
