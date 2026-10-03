@@ -72,7 +72,7 @@ table.data { position: absolute; top: var(--fig-top); left: calc(var(--mx) - 8pt
       <tr><td>Track 1 brief</td><td>Find, clean and decode weak radio signals with no human tuning</td><td>Asked for: filter, acquire or re-acquire, decoded telemetry, before/after spectra</td></tr>
       <tr class="tight"><td>Software: Choir<span class="sub">MATLAB R2026b</span></td><td>Real NASA Curiosity (MSL) telemetry in CCSDS frames, sent to 8 simulated dishes with hidden faults. Dish weights are learned only from frames that pass the CRC, carry our spacecraft ID and continue the frame count<span class="sub">Telemetry is real; the radio link is simulated (no benchmark radio clips used)</span></td><td>Measured results on the next slides</td></tr>
       <tr><td>Hardware: Choir on a breadboard<span class="sub">Raspberry Pi Pico</span></td><td>3 LEDs take turns sending the same Morse frame (sync, ID C, counter, MATLAB, checksum) to one photoresistor. Each round a hidden fault garbles one LED, corrupts its payload, or puts a look-alike frame on 2 of 3</td><td>Live: raw vs filtered light signal, majority vote vs Choir's checks, decoded message in the terminal</td></tr>
-      <tr><td>Choir swarm<span class="sub">teammate</span></td><td>Several spacecraft relay the same signal to one dish</td><td>Last slide</td></tr>
+      <tr><td>Choir swarm<span class="sub">add-on</span></td><td>Several receivers search carrier frequency, phase, timing and gain together (particle swarm), using a known training message</td><td>Last slide</td></tr>
     </tbody>
   </table>
   <footer class="foot"><span>Track text: MATLAB in Space Devpost page. Hardware code: main.py (Pico, MicroPython) and morse_gui.py (laptop view)</span><span class="n"></span></footer>
@@ -154,12 +154,18 @@ table.data { position: absolute; top: var(--fig-top); left: calc(var(--mx) - 8pt
 </section>
 
 <section class="slide">
-  <h2>[TODO: hardware headline with its measured number, e.g. Choir n/N rounds correct vs majority vote m/N]</h2>
-  <div class="todo">Placeholder for the team's hardware demo slide (to be finalized).<br><br>
-    Choir on a breadboard (main.py on a Raspberry Pi Pico): 3 LEDs take turns sending the same Morse frame (sync, ID C, counter, MATLAB, checksum) to one photoresistor. Each round a hidden fault hits some LEDs: noisy, corrupted payload, or a look-alike frame (ID Q, DECOY) on 2 of 3. Majority vote trusts what the LEDs agree on; Choir trusts only frames that pass the checksum, carry ID C and move the counter forward. The truth is revealed only after both decide.<br><br>
-    Evidence to put here: the morse_gui.py screenshot (raw vs filtered signal, per-LED checks) and its scoreboard numbers (Majority n/N, Choir n/N, false accepts).<br><br>
-    Keep on the slide: light adds as brightness, so this shows the trust rule and recovery, not Choir's radio combining.</div>
-  <footer class="foot"><span>[TODO: number of rounds, faults seen, main.py and morse_gui.py]</span><span class="n"></span></footer>
+  <h2>On the breadboard, a look-alike frame on 2 of 3 LEDs is built to win the majority vote; Choir rejects it by its ID</h2>
+  <table class="data">
+    <thead>
+      <tr><th>Hidden fault (one per round)</th><th>What reaches the photoresistor</th><th>Majority vote<span class="sub">trusts what agrees</span></th><th>Choir<span class="sub">trusts what verifies</span></th></tr>
+    </thead>
+    <tbody>
+      <tr><td>Noisy LED</td><td>One copy garbled by flicker</td><td>The 2 clean copies agree: correct</td><td>Garbled copy fails the checksum; a clean copy is logged</td></tr>
+      <tr><td>Corrupted payload</td><td>One copy with wrong letters but the old checksum</td><td>The 2 true copies agree: correct</td><td>That copy fails the checksum; a true copy is logged</td></tr>
+      <tr class="tight"><td>Look-alike on 2 of 3 LEDs</td><td>Two copies with ID Q, payload DECOY and a valid checksum</td><td>DECOY wins 2 to 1: wrong</td><td>Both rejected (ID Q is not C); the true copy is logged</td></tr>
+    </tbody>
+  </table>
+  <footer class="foot"><span>By design of the team's Pico code (MicroPython: majority vote vs three checks; truth revealed after both decide; live scoreboard on the laptop), assuming one clean copy decodes. Light adds as brightness: this shows the trust rule, not radio combining.</span><span class="n"></span></footer>
 </section>
 
 <section class="slide">
@@ -179,10 +185,18 @@ table.data { position: absolute; top: var(--fig-top); left: calc(var(--mx) - 8pt
 </section>
 
 <section class="slide">
-  <h2>[TODO: Choir swarm headline with its number (teammate's slide)]</h2>
-  <div class="todo">Placeholder for the teammate's Choir swarm slide (to be finalized by them).<br><br>
-    From the idea notes: several spacecraft relay the same signal, and the dish receives it.</div>
-  <footer class="foot"><span>[TODO: data source and script name]</span><span class="n"></span></footer>
+  <h2>Swarm receivers learned each carrier offset to within 0.6&nbsp;Hz and decoded two of three test messages with 0 bit errors</h2>
+  <table class="data">
+    <thead>
+      <tr><th>Message, Es/N0, receivers</th><th class="r">True offset</th><th class="r">Learned</th><th>True vs learned phase, timing</th><th>Decoded</th></tr>
+    </thead>
+    <tbody>
+      <tr class="tight"><td>HELLO FROM MARS, 8&nbsp;dB, 8 receivers</td><td class="r">40&nbsp;Hz</td><td class="r">39.5&nbsp;Hz</td><td>30° vs 41.6°; 2.40 vs 2.95 samples</td><td>0 bit errors, 14 rounds</td></tr>
+      <tr><td>HI TEAM, 6&nbsp;dB, 10 receivers</td><td class="r">100&nbsp;Hz</td><td class="r">99.7&nbsp;Hz</td><td>45° vs 48.6°; 4.00 vs 4.72 samples</td><td>0 bit errors, 10 rounds</td></tr>
+      <tr><td>DEEP SPACE LINK TEST, 4&nbsp;dB, 12 receivers</td><td class="r">−180&nbsp;Hz</td><td class="r">−179.4&nbsp;Hz</td><td>120° vs 105°; 6.40 vs 6.06 samples</td><td>3 of 160 bits wrong; BPSK theory predicts about 2 at 4&nbsp;dB</td></tr>
+    </tbody>
+  </table>
+  <footer class="foot"><span>Add-on: choir/swarm/swarm_receivers.m (plain MATLAB; particle swarm over frequency, phase, timing, gain). Receivers know the message (a training sequence). Numbers as reported in choir/swarm/README.md</span><span class="n"></span></footer>
 </section>
 
 <script>

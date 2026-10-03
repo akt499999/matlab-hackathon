@@ -358,7 +358,7 @@ function choirSig(s, x) {
 }
 scenes.push({
   title: '3. The choir: line them up, then add',
-  caption: `Several dishes hear the <b>same</b> faint signal, each with its own random noise. Because the dishes sit in different places, the signal reaches each one at a slightly different time. Added as-is, the copies partly cancel. So the receiver estimates each dish's delay and phase (JPL's SUMPLE idea: compare each dish against the sum of the others) and shifts them into line. Then the signal stacks perfectly while the noise only partly stacks: <b>N dishes make the signal N times clearer</b> (+3 dB for 2, +6 dB for 4, +9 dB for 8).`,
+  caption: `Several dishes hear the <b>same</b> faint signal, each with its own random noise. Because the dishes sit in different places, the signal reaches each one at a slightly different time. Added as-is, the copies partly cancel. So the receiver estimates each dish's delay and phase and shifts them into line. (The classic blind way is JPL's SUMPLE: compare each dish against the sum of the others. Choir uses the sync marker and verified frames instead.) Then the signal stacks perfectly while the noise only partly stacks: <b>N dishes make the signal N times clearer</b> (+3 dB for 2, +6 dB for 4, +9 dB for 8).`,
   init(s) { setupChoir(s, 8); },
   actions: [
     { label: '2 dishes', on: s => s.N === 2, run: s => { setupChoir(s, 2); restart(); } },
@@ -653,8 +653,8 @@ function buildElastic(s) {
   }
 }
 scenes.push({
-  title: '6. Elastic arraying: give antennas back',
-  caption: `Antenna time is scarce: NASA's Deep Space Network has had up to 40% more requests than it can serve. So the receiver uses <b>only as many dishes as the link needs</b>. It knows each dish's verified strength, <b>recruits dishes fast</b> when the signal weakens (a storm, a dead dish, the spacecraft setting), and <b>releases them slowly</b> when there is spare margin. Goal: the same telemetry delivered with fewer antenna-hours. (Illustrative numbers; the real ones come from the MATLAB sim.)`,
+  title: '6. Next step (not built yet): elastic arraying',
+  caption: `<b>This scene shows a planned next step; it is not in the submitted MATLAB code.</b> Antenna time is scarce: NASA's Deep Space Network has had up to 40% more requests than it can serve. So a receiver could use <b>only as many dishes as the link needs</b>. It knows each dish's verified strength, <b>recruits dishes fast</b> when the signal weakens (a storm, a dead dish, the spacecraft setting), and <b>releases them slowly</b> when there is spare margin. Goal: the same telemetry delivered with fewer antenna-hours. (Illustrative numbers; the real ones come from the MATLAB sim.)`,
   init(s) { buildElastic(s); },
   actions: [{ label: 'replay', run: () => restart() }],
   draw(t, s) {
@@ -693,7 +693,7 @@ scenes.push({
     line(X(k), cy0, X(k), sy1, C.text, 1, [2, 3]);
 
     const c = s.cum[k], hrs = v => ((v * 8) / s.steps).toFixed(1);
-    line(725, 222, 755, 222, C.yellow, 2.5); text('elastic (ours)', 763, 226, { size: 13 });
+    line(725, 222, 755, 222, C.yellow, 2.5); text('elastic (planned)', 763, 226, { size: 13 });
     line(725, 244, 755, 244, C.dim, 1.5, [3, 4]); text('always use every dish', 763, 248, { size: 13 });
     line(725, 266, 755, 266, C.red, 1.5, [6, 5]); text('needed for frames to decode', 763, 270, { size: 13 });
     text('antenna-hours used so far', 725, 318, { size: 12, color: C.dim });
@@ -812,7 +812,7 @@ scenes.push({
 /* ================= scene 8: the whole pipeline ================= */
 scenes.push({
   title: '8. The whole pipeline on one page',
-  caption: `Top: our simulated spacecraft packs <b>real Curiosity telemetry</b> into frames. Middle: a simulated channel adds noise, delays, drift and hidden faults to each dish. Bottom: <b>our receiver</b>. The two yellow tags mark our key ideas: <b>trust weights</b> learned from frames that passed the CRC ("trust what decodes, not what agrees"), and <b>elastic arraying</b>. The scoreboard compares the log with the truth, but the truth never flows into the receiver.`,
+  caption: `Top: our simulated spacecraft packs <b>real Curiosity telemetry</b> into frames. Middle: a simulated channel adds noise, delays, drift and hidden faults to each dish. Bottom: <b>our receiver</b>. The yellow tag marks our key idea: <b>trust weights</b> learned from frames that passed the CRC ("trust what decodes, not what agrees"). <b>Elastic arraying</b> is a planned next step, not built yet. The scoreboard compares the log with the truth, but the truth never flows into the receiver.`,
   init() {},
   actions: [],
   draw(t) {
@@ -834,7 +834,7 @@ scenes.push({
     text('verified frames become a clean reference: "trust what decodes, not what agrees"', 568, 316, { size: 12, color: C.yellow, align: 'center' });
     box(40, 340, 440, 56, ['supervisor (state machine)', 'search, align, lock, decode, lost / fallback  \u00b7  watches decoder health only']);
     line(150, 340, 150, 266, C.dim, 1.2, [4, 4]);
-    box(520, 340, 440, 56, ['elastic arraying', 'recruits / releases dishes to hit the target error rate'], { tag: 'OURS', stroke: C.yellow, titleColor: C.yellow });
+    box(520, 340, 440, 56, ['elastic arraying (next step)', 'would recruit / release dishes to hit the target error rate'], { tag: 'NEXT', stroke: C.gray, dash: [5, 4] });
     const el = [[960, 368], [980, 368], [980, 149], [960, 149]];
     polyArrow(el, C.cyan, 1.6, [5, 4]);
     text('recruit / release', 975, 330, { size: 11, color: C.cyan, align: 'right' });

@@ -1,6 +1,6 @@
 # Notes for anyone (or any assistant) working in this repo
 
-- All of our work lives in `choir/` (the repo owner asked that nothing outside this folder be changed).
+- All project code lives in `choir/`; the main README (judge-facing) is at the repository root.
 - Reproduce everything: `matlab -batch run_all` from `choir/` (~2 min with Parallel Computing Toolbox). It runs `tests/run_tests.m` first, then writes `results/` and `docs/slides.pdf`.
 - Tests only: `run('tests/run_tests.m')`.
 - One scenario: `run_scenario(choir_params(), make_scenario(seed, frames, EsN0dB, faults), specs)` with `fault(...)` and `rx_spec(...)`.

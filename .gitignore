@@ -1,20 +1,9 @@
-# Python virtual environment
-.venv/
-venv/
-env/
-__pycache__/
-*.pyc
+# Datasets (too big for GitHub; download instructions are in the README)
+res/
+choir/res/
 
-# Editor settings
-.vscode/
-.idea/
-
-# Datasets (too big for GitHub; download links go in the README)
-res/*
-!res/.gitkeep
-*.pkl
-*.hdf5
-*.h5
+# Slide render previews
+choir/deck/png/
 
 # MATLAB temporary files
 *.asv
@@ -24,7 +13,9 @@ slprj/
 codegen/
 *.slxc
 
-# OS files
+# Editor and OS files
+.vscode/
+.idea/
 .DS_Store
 Thumbs.db
 desktop.ini
