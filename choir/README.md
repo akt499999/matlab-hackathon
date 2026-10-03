@@ -14,10 +14,10 @@ All numbers come from `run_all.m`. Development used seeds 1–30 and 101–120. 
 
 | Test (8 dishes, mean 2 dB Es/N0 per dish) | Choir | SUMPLE (blind) | Equal gain | Sync-marker only | Bound* |
 |---|---|---|---|---|---|
-| Look-alike spacecraft, +10 dB per dish | **88.5%** | 0.0% | 0.0% | 85.0% | 90.2% |
-| Look-alike spacecraft, +20 dB per dish | **87.8%** | 0.0% | 0.0% | 7.2% | 89.8% |
+| Look-alike spacecraft, +10 dB per dish | **88.5%** | 0.0% | 0.0% | 85.0% | 90.3% |
+| Look-alike spacecraft, +20 dB per dish | **87.8%** | 0.0% | 0.0% | 7.3% | 89.8% |
 | Wide-band source, +10 dB per dish | **99.8%** | 0.8% | 15.0% | 98.5% | 99.8% |
-| Wide-band source, +20 dB per dish | **98.2%** | 0.0% | 0.0% | 72.0% | 99.8% |
+| Wide-band source, +20 dB per dish | **98.3%** | 0.0% | 0.0% | 72.0% | 99.8% |
 | Six hidden faults per run, 20 runs | **90.6%** | 77.7%† | 77.3%† | n/a | n/a |
 | Frames logged with wrong telemetry, all experiments | **0** | 0 | 0 | 0 | 0 |
 
@@ -66,7 +66,7 @@ Percentages are telemetry frames delivered bit-exact. The best single dish gets 
   - A verified frame provides 1,816 known symbols. The sync marker provides 32. That is 10·log₁₀(1816/32) ≈ 17.5 dB more averaging.
   - Interference cannot produce a verified frame by accident.
   - The spacecraft-ID check is essential: a look-alike's frames pass their own CRC.
-  - "Sync-marker only" uses Choir's exact math but learns `h` from the 32 known bits. The gap between it and Choir (7.2% vs 87.8% at +20 dB) is what verification adds. Part of the reason: a look-alike repeats the same sync marker and nearly the same header in every frame, so it biases a sync-marker estimate in the same way every time.
+  - "Sync-marker only" uses Choir's exact math but learns `h` from the 32 known bits. The gap between it and Choir (7.3% vs 87.8% at +20 dB) is what verification adds. Part of the reason: a look-alike repeats the same sync marker and nearly the same header in every frame, so it biases a sync-marker estimate in the same way every time.
 - **Covariance minus the spacecraft's own part.** Our first version used the plain frame covariance, `w = R⁻¹h`. At high SNR it partly cancelled the spacecraft, a known effect when `h` is slightly off. Subtracting `h hᴴ` and flooring at the noise level fixed it.
 - **A fair comparison.**
   - Every receiver sees identical samples and shares the front end and the supervisor.

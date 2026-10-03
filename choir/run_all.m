@@ -16,5 +16,6 @@ exp_snr(P, seeds, resDir);
 exp_interference(P, seeds, resDir);
 exp_faults(P, 301:320, resDir);
 exp_spectra(P, resDir);
-make_slides(root);
 fprintf('All results written to %s in %.0f s\n', resDir, toc(t0));
+% Slides: run deck/make_figs.m (figures + numbers.json from these results), then render deck/deck.html
+% to PDF (we used Chrome headless); the rendered deck is copied to docs/slides.pdf.

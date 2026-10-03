@@ -55,7 +55,7 @@ telemetry (NASA MSL) -> CCSDS-style frames + CRC-16 -> ccsdsTMWaveformGenerator 
 
 **Why these choices**
 - **The real CCSDS frame structure.** It makes the look-alike test honest: real spacecraft share the sync marker and send valid CRCs, so the spacecraft-ID check matters.
-- **Verified frames give 17.5 dB more averaging than the sync marker alone** (1,816 symbols vs 32). The "sync-marker only" baseline isolates that: 7.2% vs Choir's 87.8% against a +20 dB look-alike.
+- **Verified frames give 17.5 dB more averaging than the sync marker alone** (1,816 symbols vs 32). The "sync-marker only" baseline isolates that: 7.3% vs Choir's 87.8% against a +20 dB look-alike.
 - **Subtracting the spacecraft's own part from the covariance.** Without it, our first version partly cancelled the spacecraft at high SNR.
 - **No deep learning.** The combining and decoding math is known and near-optimal, and there was no training data for a network.
 
@@ -65,10 +65,10 @@ All numbers come from `run_all`. Development used seeds 1–30 and 101–120. Re
 
 | 8 dishes, mean 2 dB per dish | Choir | SUMPLE | Equal gain | Sync-marker only | Bound* |
 |---|---|---|---|---|---|
-| Look-alike spacecraft +10 dB | **88.5%** | 0.0% | 0.0% | 85.0% | 90.2% |
-| Look-alike spacecraft +20 dB | **87.8%** | 0.0% | 0.0% | 7.2% | 89.8% |
+| Look-alike spacecraft +10 dB | **88.5%** | 0.0% | 0.0% | 85.0% | 90.3% |
+| Look-alike spacecraft +20 dB | **87.8%** | 0.0% | 0.0% | 7.3% | 89.8% |
 | Wide-band source +10 dB | **99.8%** | 0.8% | 15.0% | 98.5% | 99.8% |
-| Wide-band source +20 dB | **98.2%** | 0.0% | 0.0% | 72.0% | 99.8% |
+| Wide-band source +20 dB | **98.3%** | 0.0% | 0.0% | 72.0% | 99.8% |
 | Wrong frames logged | **0** | 0 | 0 | 0 | 0 |
 
 \* The bound knows the transmitted bits of every frame. It is a reference, not a receiver. The best single dish gets 0% in every row: at 2 dB one dish cannot decode.
